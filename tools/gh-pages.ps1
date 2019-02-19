@@ -3,7 +3,7 @@
 param ([string] $env = "local")
 
 $msg = 'gh-pages.ps1: build -> gh-pages'
-$gitURL = "https://github.com/tarmil/fsbolero.github.io"
+$gitURL = "https://github.com/fsbolero/website"
 
 write-host -foregroundColor "green" "=====> $msg"
 
