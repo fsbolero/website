@@ -1,0 +1,30 @@
+version: 0.3.{build}
+image:
+- Visual Studio 2017
+
+build:
+  verbosity: minimal
+
+branches:
+  except:
+  - gh-pages
+
+init:
+- git config --global core.autocrlf input
+
+build_script:
+- ps: pushd src/Website
+- ps: npm install
+- ps: popd
+- ps: dotnet build -c Release
+
+environment:
+  GH_TOKEN:
+    secure: dhFy1eZoqG4QPkKTuLFxix7QQMxaIyIpYjkvTU3CukYZz1CEOJeHfBSaT8tkPsGL
+
+for:
+- branches:
+    only:
+    - master
+  on_success:
+  - ps: .\tools\gh-pages.ps1 -env appveyor
