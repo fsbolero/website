@@ -12,6 +12,13 @@ type MainTemplate = Templating.Template<"index.html">
 
 module Site =
 
+    let Menu = [
+        "Home", "/"
+        "Documentation", "/docs"
+        "Blog", "/blog"
+        "Try F#", "https://try.fsbolero.io"
+    ]
+
     let Page (body: Doc) =
         MainTemplate()
 #if !DEBUG
@@ -19,6 +26,8 @@ module Site =
 #endif
             .ShowDrawer(fun e -> e.Vars.DrawerShown.Value <- "shown")
             .HideDrawer(fun e -> e.Vars.DrawerShown.Value <- "")
+            .TopMenu([for text, url in Menu -> MainTemplate.TopMenuItem().Text(text).Url(url).Doc()])
+            .DrawerMenu([for text, url in Menu -> MainTemplate.DrawerMenuItem().Text(text).Url(url).Doc()])
             .Body(body)
             .Doc()
         |> Content.Page

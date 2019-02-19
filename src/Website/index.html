@@ -14,11 +14,9 @@
             <span class="navbar-item"><a href="/">Bolero</a></span>
         </div>
         <div class="navbar-menu">
-            <nav class="navbar-end">
-                <a class="navbar-item is-hoverable has-text-weight-bold" href="/">Home</a>
-                <a class="navbar-item is-hoverable has-text-weight-bold" href="/docs">Documentation</a>
-                <a class="navbar-item is-hoverable has-text-weight-bold" href="/blog">Blog</a>
-                <a class="navbar-item is-hoverable has-text-weight-bold" href="https://try.fsbolero.io">Try F#</a>
+            <nav class="navbar-end" ws-hole="TopMenu">
+                <a ws-template="TopMenuItem" href="${Url}"
+                   class="navbar-item is-hoverable has-text-weight-bold">${Text}</a>
             </nav>
         </div>
     </header>
@@ -26,11 +24,9 @@
         <input class="is-hidden" ws-var="DrawerShown" /><!--Force DrawerShown to be a Var-->
         <div id="left-drawer" class="lhs-drawer ${DrawerShown}">
             <span class="navbar-item"><a href="/">Bolero</a></span>
-            <nav>
-                <a class="navbar-item nav-menu-link" href="/">Home</a>
-                <a class="navbar-item nav-menu-link" href="/docs">Documentation</a>
-                <a class="navbar-item nav-menu-link" href="/blog">Blog</a>
-                <a class="navbar-item nav-menu-link" href="https://try.fsbolero.io">Try F#</a>
+            <nav ws-hole="DrawerMenu">
+                <a ws-template="DrawerMenuItem" href="${Url}"
+                   class="navbar-item nav-menu-link">${Text}</a>
             </nav>
         </div>
     </div>
