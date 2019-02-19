@@ -8,8 +8,9 @@ $primary: orangered;
 @import "bulma/sass/elements/title.sass";
 @import "bulma/sass/layout/hero.sass";
 
-// Font-Awesome
-@import "/css/font-awesome.min.css";
+// Fonts
+@import "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
+@import "https://fonts.googleapis.com/css?family=Roboto:400,500";
 
 // App
 @import "navbar.scss";
