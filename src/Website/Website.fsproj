@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <WebSharperProject>Html</WebSharperProject>
-    <WebSharperHtmlDirectory>$(MSBuildThisFileDirectory)bin\html</WebSharperHtmlDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +19,7 @@
     <None Include="compilerconfig.json.defaults" />
     <None Include="package.json" />
     <None Include="package-lock.json" />
+    <None Include="wsconfig.json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@
     "Website": {
       "commandName": "Executable",
       "executablePath": "dotnet",
-      "commandLineArgs": "serve -d $(WebSharperHtmlDirectory) -p:55862",
+      "commandLineArgs": "serve -d $(MSBuildProjectDirectory)/../../build -p:55862",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:55862/"
     }

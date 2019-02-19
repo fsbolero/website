@@ -2,5 +2,6 @@ node_modules/
 .vs/
 bin/
 obj/
+build/
 *.user
 /src/Website/css/all*.css
