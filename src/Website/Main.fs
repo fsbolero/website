@@ -14,6 +14,9 @@ module Site =
 
     let Page (body: Doc) =
         MainTemplate()
+#if !DEBUG
+            .ReleaseMin(".min")
+#endif
             .ShowDrawer(fun e -> e.Vars.DrawerShown.Value <- "shown")
             .HideDrawer(fun e -> e.Vars.DrawerShown.Value <- "")
             .Body(body)

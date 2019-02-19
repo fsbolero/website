@@ -4,7 +4,8 @@
     "inputFile": "scss/all.scss",
     "options": {
       "includePath": "node_modules",
-      "sourceMap": true
+      "sourceMap": true,
+      "sourceMapRoot": ".."
     }
   }
 ]

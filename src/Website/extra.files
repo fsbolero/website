@@ -4,3 +4,7 @@
 img/*
 css/*
 fonts/*
+
+// For source maps:
+scss/*
+node_modules/bulma/sass/*
