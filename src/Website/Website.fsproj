@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <WebSharperProject>Html</WebSharperProject>
+    <WebSharperHtmlDirectory>$(MSBuildThisFileDirectory)bin\html</WebSharperHtmlDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Main.fs" />
+    <Content Include="**/*.html" />
+    <Content Include="img/**/*.png" />
+    <Content Include="img/**/*.jpg" />
+    <Content Include="scss/**/*.scss" />
+    <Content Include="css/**/*.css" />
+    <Content Include="fonts/**/*.*" />
+    <Content Remove="bin/**/*.*" />
+    <Content Include=".nojekyll" />
+    <None Include="extra.files" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults" />
+    <None Include="package.json" />
+    <None Include="package-lock.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
+    <PackageReference Include="WebSharper" Version="4.5.8.326" />    
+    <PackageReference Include="WebSharper.FSharp" Version="4.5.8.326" />
+    <PackageReference Include="WebSharper.UI" Version="4.5.7.159" />
+  </ItemGroup>
+
+</Project>

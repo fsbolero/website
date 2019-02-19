@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bolero: F# in WebAssembly</title>
+    <link rel="stylesheet" href="/css/all.min.css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500" />
+    <meta ws-replace="meta" />
+</head>
+<body>
+    <header class="navbar overlay-bar">
+        <div class="navbar-brand">
+            <a class="navbar-item is-hoverable" ws-onclick="ShowDrawer"><i class="fa fa-bars"></i></a>
+            <span class="navbar-item"><a href="/">Bolero</a></span>
+        </div>
+        <div class="navbar-menu">
+            <nav class="navbar-end">
+                <a class="navbar-item is-hoverable has-text-weight-bold" href="/">Home</a>
+                <a class="navbar-item is-hoverable has-text-weight-bold" href="/docs">Documentation</a>
+                <a class="navbar-item is-hoverable has-text-weight-bold" href="/blog">Blog</a>
+                <a class="navbar-item is-hoverable has-text-weight-bold" href="https://try.fsbolero.io">Try F#</a>
+            </nav>
+        </div>
+    </header>
+    <div class="drawer-backdrop ${DrawerShown}" ws-onclick="HideDrawer">
+        <input class="is-hidden" ws-var="DrawerShown" /><!--Force DrawerShown to be a Var-->
+        <div id="left-drawer" class="lhs-drawer ${DrawerShown}">
+            <span class="navbar-item"><a href="/">Bolero</a></span>
+            <nav>
+                <a class="navbar-item nav-menu-link" href="/">Home</a>
+                <a class="navbar-item nav-menu-link" href="/docs">Documentation</a>
+                <a class="navbar-item nav-menu-link" href="/blog">Blog</a>
+                <a class="navbar-item nav-menu-link" href="https://try.fsbolero.io">Try F#</a>
+            </nav>
+        </div>
+    </div>
+    <div ws-replace="Body">
+        <div ws-children-template="HomeBody">
+            <div class="hero is-large is-dark page-banner">
+                <div class="hero-body has-text-centered">
+                    <h1 class="title is-spaced">Bolero: F# in WebAssembly</h1>
+                    <h2 class="subtitle">Develop SPAs with the full power of F# and .NET.</h2>
+                    <div>
+                        <a class="button is-large is-warning has-text-weight-bold"
+                           href="https://try.fsbolero.io" target="_blank">
+                            <span>Try F# in WebAssembly</span>
+                            <span class="icon is-small">
+                                <i class="fa fa-external-link" aria-hidden="true"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script ws-replace="scripts"></script>
+</body>
+</html>

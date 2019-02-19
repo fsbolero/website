@@ -1,0 +1,26 @@
+$primary: orangered;
+
+// Bulma
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/components/navbar.sass";
+@import "bulma/sass/elements/button.sass";
+@import "bulma/sass/elements/title.sass";
+@import "bulma/sass/layout/hero.sass";
+
+// Font-Awesome
+@import "/css/font-awesome.min.css";
+
+// App
+@import "navbar.scss";
+@import "drawer.scss";
+@import "home.scss";
+
+body {
+    font-family: 'Roboto',sans-serif;
+    color: #222;
+}
+
+.test {
+    color: $primary;
+}

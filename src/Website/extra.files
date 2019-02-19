@@ -1,0 +1,6 @@
+// Automatically copy files to the output folder.
+
+.nojekyll
+img/*
+css/*
+fonts/*

@@ -1,0 +1,22 @@
+{
+  "name": "fsbolero.io",
+  "version": "1.0.0",
+  "description": "Website for Bolero",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fsbolero/fsbolero.github.io.git"
+  },
+  "author": "IntelliFactory",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/fsbolero/fsbolero.github.io/issues"
+  },
+  "homepage": "https://github.com/fsbolero/fsbolero.github.io#readme",
+  "devDependencies": {
+    "bulma": "^0.6.1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Website": {
+      "commandName": "Executable",
+      "executablePath": "dotnet",
+      "commandLineArgs": "serve -d $(WebSharperHtmlDirectory) -p:55862",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:55862/"
+    }
+  }
+}
