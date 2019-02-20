@@ -1,3 +1,5 @@
+.paket/
+!.paket/*.{props,proj,targets}
 node_modules/
 .vs/
 bin/
