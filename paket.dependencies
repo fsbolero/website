@@ -2,6 +2,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 
+nuget bolero
 nuget FSharp.Core
 nuget BuildWebCompiler
 nuget WebSharper

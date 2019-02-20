@@ -3,6 +3,7 @@ module Website.Main
 open WebSharper
 open WebSharper.Sitelets
 open WebSharper.UI
+open WebSharper.UI.Notation
 open WebSharper.UI.Server
 
 type EndPoint =
@@ -24,8 +25,8 @@ module Site =
 #if !DEBUG
             .ReleaseMin(".min")
 #endif
-            .ShowDrawer(fun e -> e.Vars.DrawerShown.Value <- "shown")
-            .HideDrawer(fun e -> e.Vars.DrawerShown.Value <- "")
+            .ShowDrawer(fun e -> e.Vars.DrawerShown := "shown")
+            .HideDrawer(fun e -> e.Vars.DrawerShown := "")
             .TopMenu([for text, url in Menu -> MainTemplate.TopMenuItem().Text(text).Url(url).Doc()])
             .DrawerMenu([for text, url in Menu -> MainTemplate.DrawerMenuItem().Text(text).Url(url).Doc()])
             .Body(body)
