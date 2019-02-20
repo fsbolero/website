@@ -16,6 +16,7 @@ NUGET
       System.Xml.XmlDocument (>= 4.3)
       System.Xml.XPath (>= 4.3)
       System.Xml.XPath.XmlDocument (>= 4.3)
+    Markdig (0.15.7)
     Microsoft.AspNetCore.Blazor (0.7)
       Microsoft.JSInterop (>= 0.7)
     Microsoft.AspNetCore.Blazor.Browser (0.7)

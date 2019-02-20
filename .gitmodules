@@ -1,0 +1,3 @@
+[submodule "src/Website/docs"]
+	path = src/Website/docs
+	url = https://github.com/fsbolero/bolero.wiki

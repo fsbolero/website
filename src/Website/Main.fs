@@ -8,6 +8,7 @@ open WebSharper.UI.Server
 
 type EndPoint =
     | [<EndPoint "GET /">] Home
+    | [<EndPoint "GET /docs"; Wildcard>] Docs of string
 
 type MainTemplate = Templating.Template<"index.html">
 
@@ -38,18 +39,29 @@ module Site =
             .Doc()
         |> Page
 
+    let DocPage html =
+        MainTemplate.DocsBody()
+            .Content(Doc.Verbatim html)
+            .Doc()
+        |> Page
+
     [<Website>]
     let Main =
         Application.MultiPage (fun ctx action ->
             match action with
             | Home -> HomePage ()
+            | Docs p -> DocPage Docs.Pages.[p]
         )
 
 [<Sealed>]
 type Website() =
     interface IWebsite<EndPoint> with
         member this.Sitelet = Site.Main
-        member this.Actions = [Home]
+        member this.Actions = [
+            yield Home
+            for p in Docs.Pages.Keys do
+                yield Docs p
+        ]
 
 [<assembly: Website(typeof<Website>)>]
 do ()

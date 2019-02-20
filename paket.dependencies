@@ -5,6 +5,7 @@ framework: netstandard2.0
 nuget bolero
 nuget FSharp.Core
 nuget BuildWebCompiler
+nuget Markdig
 nuget WebSharper
 nuget WebSharper.FSharp
 nuget WebSharper.UI

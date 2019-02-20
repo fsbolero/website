@@ -12,10 +12,13 @@ branches:
 init:
 - git config --global core.autocrlf input
 
-build_script:
+install:
+- git submodule update --init --recursive --remote
 - ps: pushd src/Website
 - ps: npm install
 - ps: popd
+
+build_script:
 - ps: dotnet build -c Release
 
 environment:
