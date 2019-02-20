@@ -26,3 +26,7 @@ let Pages =
         let path = path.[..path.Length - 4] // Trim .md
         path, parseFile fullPath)
     |> dict
+
+let Sidebar =
+    baseDir </> "_Sidebar.md"
+    |> parseFile

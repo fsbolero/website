@@ -41,6 +41,7 @@ module Site =
 
     let DocPage html =
         MainTemplate.DocsBody()
+            .Sidebar(Doc.Verbatim Docs.Sidebar)
             .Content(Doc.Verbatim html)
             .Doc()
         |> Page
