@@ -21,11 +21,16 @@ module Site =
         "Try F#", "https://try.fsbolero.io"
     ]
 
-    let Page (body: Doc) =
+    let Page (title: option<string>) (body: Doc) =
         MainTemplate()
 #if !DEBUG
             .ReleaseMin(".min")
 #endif
+            .Title(
+                match title with
+                | None -> ""
+                | Some t -> t + " | "
+            )
             .ShowDrawer(fun e -> e.Vars.DrawerShown := "shown")
             .HideDrawer(fun e -> e.Vars.DrawerShown := "")
             .TopMenu([for text, url in Menu -> MainTemplate.TopMenuItem().Text(text).Url(url).Doc()])
@@ -37,14 +42,14 @@ module Site =
     let HomePage () =
         MainTemplate.HomeBody()
             .Doc()
-        |> Page
+        |> Page None
 
-    let DocPage html =
+    let DocPage (doc: Docs.Document) =
         MainTemplate.DocsBody()
             .Sidebar(Doc.Verbatim Docs.Sidebar)
-            .Content(Doc.Verbatim html)
+            .Content(Doc.Verbatim doc.content)
             .Doc()
-        |> Page
+        |> Page doc.title
 
     [<Website>]
     let Main =
