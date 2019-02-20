@@ -7,12 +7,12 @@
     <Compile Include="Docs.fs" />
     <Compile Include="Main.fs" />
     <Content Include="**/*.html" />
-    <Content Include="img/**/*.png" />
-    <Content Include="img/**/*.jpg" />
-    <Content Include="scss/**/*.scss" />
-    <Content Include="css/**/*.css" />
+    <Content Include="img/**/*.*" />
+    <Content Include="scss/**/*.*" />
+    <Content Include="css/**/*.*" />
     <Content Include="fonts/**/*.*" />
     <Content Remove="bin/**/*.*" />
+    <Content Include="docs/**/*.*" />
     <Content Include=".nojekyll" />
     <None Include="extra.files" />
     <None Include="compilerconfig.json" />
