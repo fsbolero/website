@@ -1,0 +1,42 @@
+---
+layout: default
+---
+<article {% if page.feature-img %}class="feature-image"{% endif %}>
+  <header style="background-image: url('{{ site.baseurl }}/{{ page.feature-img }}')">
+    <h1 class="title">{{ page.title }}</h1>
+    {% if page.subtitle %}<h2 class="subtitle">{{ page.subtitle }}</h2>{% endif %}
+    <p class="meta">
+      {{ page.date | date: "%B %-d, %Y" }}
+      {% if page.author %} - {{ page.author }}{% endif %}
+    </p>
+  </header>
+  <section class="post-content">{{ content }}</section>
+  {% include "tags_list" tags=page.tags tag_count=page.tags.size %}
+</article>
+
+<!-- Disqus -->
+{% if site.theme_settings.disqus_shortname %}
+<div class="comments">
+  {% include "disqus" %}
+</div>
+{% endif %}
+
+<!-- Post navigation -->
+{% if site.theme_settings.post_navigation == true %}
+  {% include "post_nav" %}
+{% endif %}
+
+<article>
+  <section style="background-color:#aaa;">
+    <ul>
+      <li>paginator.page = {{ paginator.page }}</li>
+      <li>paginator.per_page = {{ paginator.per_page }}</li>
+      <li>paginator.total_posts = {{ paginator.total_posts }}</li>
+      <li>paginator.total_pages = {{ paginator.total_pages }}</li>
+      <li>paginator.previous_page = {{ paginator.previous_page }}</li>
+      <li>paginator.previous_page_path = {{ paginator.previous_page_path }}</li>
+      <li>paginator.next_page = {{ paginator.next_page }}</li>
+      <li>paginator.next_page_path = {{ paginator.next_page_path }}</li>
+    </ul>
+  </section>
+</article>

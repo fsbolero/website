@@ -1,5 +1,7 @@
 module Website.Main
 
+open System
+open System.IO
 open WebSharper
 open WebSharper.Sitelets
 open WebSharper.UI
@@ -8,6 +10,7 @@ open WebSharper.UI.Notation
 type EndPoint =
     | [<EndPoint "GET /">] Home
     | [<EndPoint "GET /docs"; Wildcard>] Docs of string
+    | [<EndPoint "/blog">] BlogPage of slug: string
 
 type MainTemplate = Templating.Template<"index.html">
 
@@ -26,6 +29,8 @@ module Client =
 
 module Site =
     open WebSharper.UI.Server
+    open Website.Blogs
+    open Website.Blogs.Jekyll
 
     let Menu = [
         "Home", "/"
@@ -66,12 +71,29 @@ module Site =
         |> Page doc.title
 
     [<Website>]
-    let Main =
+    let Main, BlogPages =
+        let blogConfig =
+            {
+                PostsFolder = "_posts"
+                LayoutsFolder = "_layouts"
+            }
+        let blogPages = Runtime.Paginator.BuildPostList blogConfig
         Application.MultiPage (fun ctx action ->
+            let site =
+                Path.Combine(__SOURCE_DIRECTORY__, "_config.yml")
+                |> File.ReadAllText
+                |> Jekyll.Yaml.OfYaml<Site>
+            printfn "site=%A" site
+            let paginator = Runtime.Paginator.Build(blogConfig, site)
+            printfn "paginator=%A" paginator
             match action with
-            | Home -> HomePage ()
-            | Docs p -> DocPage Docs.Pages.[p]
-        )
+            | Home ->
+                HomePage ()
+            | BlogPage p ->
+                Jekyll.BlogPage ctx blogConfig (site, paginator) (SlugType.BlogPost p)
+            | Docs p ->
+                DocPage Docs.Pages.[p]
+        ), blogPages
 
 [<Sealed>]
 type Website() =
@@ -81,6 +103,8 @@ type Website() =
             yield Home
             for p in Docs.Pages.Keys do
                 yield Docs p
+            for (_, _, _, slug, _) in Site.BlogPages do
+                yield BlogPage slug
         ]
 
 [<assembly: Website(typeof<Website>)>]

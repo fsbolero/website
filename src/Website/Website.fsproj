@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Blogs.fs" />
     <Compile Include="Docs.fs" />
     <Compile Include="Main.fs" />
     <Content Include="**/*.html" />

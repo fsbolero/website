@@ -8,6 +8,7 @@ NUGET
       Microsoft.AspNetCore.Blazor.Browser (>= 0.7)
       Microsoft.AspNetCore.Http.Abstractions (>= 2.1)
     BuildWebCompiler (1.12.394)
+    DotLiquid (2.0.298)
     Elmish (2.0.3)
       FSharp.Core (>= 4.5.2)
     FSharp.Core (4.6.2)
@@ -39,6 +40,7 @@ NUGET
     Microsoft.NETCore.Targets (2.1)
     Mono.WebAssembly.Interop (0.7)
       Microsoft.JSInterop (>= 0.7)
+    Newtonsoft.Json (12.0.1)
     runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
     runtime.debian.9-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
     runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
@@ -397,6 +399,7 @@ NUGET
       HtmlAgilityPack (>= 1.7.1)
       System.Xml.XDocument (>= 4.3)
       WebSharper (>= 4.5.8 < 4.6)
+    YamlDotNet (5.4)
   remote: https://daily.websharper.com/nuget
     WebSharper.HighlightJS (4.5.2.161)
       WebSharper (>= 4.5.8 < 4.6)

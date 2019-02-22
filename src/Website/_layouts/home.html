@@ -1,0 +1,51 @@
+---
+layout: default
+---
+
+<div class="home">
+  {% if site.theme_settings.header_text %}
+  <div class="call-out"
+  style="background-image: url('{{ site.baseurl }}/{{ site.theme_settings.header_text_feature_image }}')">
+    {{ site.theme_settings.header_text }}
+  </div>
+  {% endif %}
+
+  <div class="posts">
+    {% for post in paginator.posts %}
+    <div class="post-teaser">
+      <header>
+        <h1>
+          <a class="post-link" href="{{ post.url | relative_url }}">
+            {{ post.title }}
+          </a>
+        </h1>
+        <p class="meta">
+          {{ post.date }}
+        </p>
+      </header>
+      <div class="excerpt">
+        {{ post.excerpt }}
+        <br />
+        <a class="button" href="{{ post.url | relative_url }}">
+          {{ site.theme_settings.str_continue_reading }}
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+<article>
+  <section style="background-color:#aaa;">
+    <ul>
+      <li>paginator.page = {{ paginator.page }}</li>
+      <li>paginator.per_page = {{ paginator.per_page }}</li>
+      <li>paginator.total_posts = {{ paginator.total_posts }}</li>
+      <li>paginator.total_pages = {{ paginator.total_pages }}</li>
+      <li>paginator.previous_page = {{ paginator.previous_page }}</li>
+      <li>paginator.previous_page_path = {{ paginator.previous_page_path }}</li>
+      <li>paginator.next_page = {{ paginator.next_page }}</li>
+      <li>paginator.next_page_path = {{ paginator.next_page_path }}</li>
+    </ul>
+  </section>
+</article>
+</div>
