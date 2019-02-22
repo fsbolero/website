@@ -4,7 +4,6 @@ open WebSharper
 open WebSharper.Sitelets
 open WebSharper.UI
 open WebSharper.UI.Notation
-open WebSharper.UI.Server
 
 type EndPoint =
     | [<EndPoint "GET /">] Home
@@ -12,7 +11,21 @@ type EndPoint =
 
 type MainTemplate = Templating.Template<"index.html">
 
+[<JavaScript>]
+module Client =
+    open WebSharper.HighlightJS
+    open WebSharper.JavaScript
+
+    [<Require(typeof<Resources.Languages.Fsharp>)>]
+    [<Require(typeof<Resources.Styles.Vs>)>]
+    let HighlightCode() =
+        JS.Document.QuerySelectorAll("code[class^=language-]").ForEach(
+            (fun (node, _, _, _) -> Hljs.HighlightBlock(node)),
+            JS.Undefined
+        )
+
 module Site =
+    open WebSharper.UI.Server
 
     let Menu = [
         "Home", "/"
@@ -36,7 +49,8 @@ module Site =
             .TopMenu([for text, url in Menu -> MainTemplate.TopMenuItem().Text(text).Url(url).Doc()])
             .DrawerMenu([for text, url in Menu -> MainTemplate.DrawerMenuItem().Text(text).Url(url).Doc()])
             .Body(body)
-            .Doc()
+            .Elt()
+            .OnAfterRender(fun _ -> Client.HighlightCode())
         |> Content.Page
 
     let HomePage () =

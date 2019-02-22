@@ -2,5 +2,6 @@ BuildWebCompiler
 WebSharper
 WebSharper.FSharp
 WebSharper.UI
+WebSharper.HighlightJs
 FSharp.Core
 Markdig

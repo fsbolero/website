@@ -1,4 +1,5 @@
 source https://api.nuget.org/v3/index.json
+source https://daily.websharper.com/nuget
 storage: none
 framework: netstandard2.0
 
@@ -8,4 +9,5 @@ nuget BuildWebCompiler
 nuget Markdig
 nuget WebSharper
 nuget WebSharper.FSharp
+nuget WebSharper.HighlightJs
 nuget WebSharper.UI

@@ -397,3 +397,6 @@ NUGET
       HtmlAgilityPack (>= 1.7.1)
       System.Xml.XDocument (>= 4.3)
       WebSharper (>= 4.5.8 < 4.6)
+  remote: https://daily.websharper.com/nuget
+    WebSharper.HighlightJS (4.5.2.161)
+      WebSharper (>= 4.5.8 < 4.6)
