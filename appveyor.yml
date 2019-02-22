@@ -14,9 +14,7 @@ init:
 
 install:
 - git submodule update --init --recursive --remote
-- ps: pushd src/Website
-- ps: npm install
-- ps: popd
+- ps: ./install.ps1 --buildOnly
 
 build_script:
 - ps: dotnet build -c Release

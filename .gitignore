@@ -2,6 +2,7 @@
 !.paket/*.{props,proj,targets}
 node_modules/
 .vs/
+.tools/
 bin/
 obj/
 build/
