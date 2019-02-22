@@ -31,7 +31,7 @@ module Site =
         "Home", "/"
         "Documentation", "/docs"
         "Blog", "/blog"
-        "Try F#", "https://try.fsbolero.io"
+        "Try F#", "https://tryfsharp.fsbolero.io"
     ]
 
     let Page (title: option<string>) (body: Doc) =
