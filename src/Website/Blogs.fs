@@ -191,18 +191,18 @@ module Runtime =
 
         static member BuildPostList (config: BlogConfig) =
             let folder = Path.Combine (__SOURCE_DIRECTORY__, config.PostsFolder)
-            printfn "folder=%s" folder
+            eprintfn "folder=%s" folder
             if Directory.Exists folder then
                 // .md files are preferred and take precedence over .html ones
                 let htmls = Directory.EnumerateFiles(folder, "*.html", SearchOption.AllDirectories)
                 let mds = Directory.EnumerateFiles(folder, "*.md", SearchOption.AllDirectories)
                 Seq.append htmls mds
                 |> Seq.toList
-                |> List.map (fun fname -> printfn "Found file: %s" fname; fname)
+                |> List.map (fun fname -> eprintfn "Found file: %s" fname; fname)
                 // Filter out ill-formed filenames
                 |> List.choose (Helpers.(|ArticleFile|_|))
             else
-                printfn "warning: the posts folder (%s) does not exist." folder
+                eprintfn "warning: the posts folder (%s) does not exist." folder
                 []
 
         static member Build (config: BlogConfig, site: Site) =
@@ -211,7 +211,7 @@ module Runtime =
                 Paginator.BuildPostList config
                 |> List.map (fun (path, filename, (y, m, d), slug, ext) ->
                     let filename = Path.GetFileNameWithoutExtension filename
-                    printfn "---> Added %s to the posts collection" path
+                    eprintfn "---> Added %s to the posts collection" path
                     let header, content =
                         path
                         |> File.ReadAllLines
@@ -295,7 +295,7 @@ module Jekyll =
                     .Build()
             let serializer = (new SerializerBuilder()).JsonCompatible().Build()
             let yaml = deserializer.Deserialize(meta)
-            printfn "DEBUG/YAML=%A" yaml
+            eprintfn "DEBUG/YAML=%A" yaml
             let json = serializer.Serialize(yaml)
             JsonConvert.DeserializeObject<'T>(json)
 
@@ -322,7 +322,7 @@ module Jekyll =
                         for f in fields do loop f.PropertyType
                     elif ty.IsGenericType then
                         let t = ty.GetGenericTypeDefinition()
-                        printfn "Checking generic type: %A" t
+                        eprintfn "Checking generic type: %A" t
                         if t = typedefof<seq<_>> || t = typedefof<list<_>>  then
                             loop (ty.GetGenericArguments().[0])          
                         elif t = typedefof<option<_>> then
@@ -331,14 +331,14 @@ module Jekyll =
                     elif ty.IsArray then          
                         loop (ty.GetElementType())
                     else
-                        printfn "--- type fell through: %A" ty
+                        eprintfn "--- type fell through: %A" ty
                 registered.[ty] <- true
             safe (fun () -> loop ty)
 
         let WithLiquidTemplate<'T> (model: 'T) template =
             Template.NamingConvention <- DotLiquid.NamingConventions.RubyNamingConvention()
             let root = Path.Combine(__SOURCE_DIRECTORY__, "_layouts")
-            printfn "ROOT is %s" root
+            eprintfn "ROOT is %s" root
             Template.FileSystem <- new FileSystems.LocalFileSystem(root)
             RegisterTypeTree typeof<'T>
             let view = Template.Parse template
@@ -349,20 +349,21 @@ module Jekyll =
             res
 
     let BlogPage ctx (config: BlogConfig) (site: Site, paginator: Runtime.Paginator) (slugTy: SlugType) =
+        eprintfn "debug: %A" slugTy
         try
             let slug, sourceFolder =
                 match slugTy with
                 | SlugType.BlogPost slug -> slug, config.PostsFolder
                 | SlugType.Index slug -> slug, ""
             let header, content =
-                let FILE ext = Path.Combine(__SOURCE_DIRECTORY__, sourceFolder, slug + ext)
+                let FILE ext = Path.Combine(__SOURCE_DIRECTORY__, sourceFolder, slug)
                 // .md files are preferred and take precedence over .html ones
                 if FILE ".md" |> File.Exists then
                     FILE ".md"
                     |> File.ReadAllLines
                     |> Runtime.Post.SplitIntoHeaderAndContent
                 elif FILE ".html" |> File.Exists then
-                    FILE ".md"
+                    FILE ".html"
                     |> File.ReadAllLines
                     |> Runtime.Post.SplitIntoHeaderAndContent
                 else
@@ -370,11 +371,12 @@ module Jekyll =
             // Get the JSON representation of the YAML header
             let page = Yaml.OfYaml<Runtime.Page> header
             //let page = paginator.UpdatePage page
-            printfn "page=%A" page
+            eprintfn "page=%A" page
             // Update the paginator
             match slugTy with
             | SlugType.BlogPost slug ->
-                paginator.Update(slug, fun url -> url.Replace("/blog/", ""))
+                //paginator.Update(slug, fun url -> url.Replace("/blog/", ""))
+                ()
             | SlugType.Index _ ->
                 ()
             let model =
@@ -401,7 +403,7 @@ module Jekyll =
                     masterContent, content |> Liquid.WithLiquidTemplate model |> Markdown.ToHtml
                 // Otherwise, we plug post content into the layout specified
                 else
-                    printfn "DEBUG: Master template found, processing..."
+                    eprintfn "DEBUG: Master template found, processing..."
                     let master = Yaml.OfYaml<Runtime.TemplatePage> masterHeader
                     let templateText =
                         Path.Combine(__SOURCE_DIRECTORY__, config.LayoutsFolder, master.layout + ".html")
@@ -420,8 +422,8 @@ module Jekyll =
             )
         with
         | NotFound file ->
-            printfn "Not found: %s" file
+            eprintfn "Not found: %s" file
             Content.NotFound
         | exn ->
-            printfn "Exception: %s\n%s" exn.Message exn.StackTrace
+            eprintfn "Exception: %s\n%s" exn.Message exn.StackTrace
             Content.ServerError

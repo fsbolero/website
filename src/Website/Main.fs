@@ -103,8 +103,8 @@ type Website() =
             yield Home
             for p in Docs.Pages.Keys do
                 yield Docs p
-            for (_, _, _, slug, _) in Site.BlogPages do
-                yield BlogPage slug
+            for (path, filename, (y, m, d), slug, ext) in Site.BlogPages do
+                yield BlogPage filename
         ]
 
 [<assembly: Website(typeof<Website>)>]
