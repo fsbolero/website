@@ -29,7 +29,7 @@ type BlogConfig =
         LayoutsFolder: string
     }
 
-type Site =
+type [<CLIMutable>] Site =
     {
         url: string
         baseurl: string
@@ -41,7 +41,7 @@ type Site =
         highlighter: string
     }
 
-and ThemeSettingsModel =
+and [<CLIMutable>] ThemeSettingsModel =
     {
         title: string
         avatar: string
@@ -57,6 +57,7 @@ and ThemeSettingsModel =
         bitbucket: string
         dribbble: string
         facebook: string
+        flickr: string
         gitlab: string
         github: string
         google_plus: string
@@ -93,7 +94,7 @@ and ThemeSettingsModel =
     }
 
 module Runtime =
-    type TemplatePage =
+    type [<CLIMutable>] TemplatePage =
         {
             layout: string
             excerpt_separator: string
@@ -108,7 +109,7 @@ module Runtime =
             content: string
         }
 
-    type Page =
+    type [<CLIMutable>] Page =
         {
             title: string
             headline: string
@@ -388,5 +389,5 @@ module Jekyll =
             eprintfn "Not found: %s" file
             Content.NotFound
         | exn ->
-            eprintfn "Exception: %s\n%s" exn.Message exn.StackTrace
+            eprintfn "Exception: %A" exn
             Content.ServerError

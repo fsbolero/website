@@ -1,26 +1,19 @@
 module Website.Yaml
 
 open System
-open System.IO
 open System.Text.RegularExpressions
 open YamlDotNet.Serialization
-open YamlDotNet.Serialization.NamingConventions
-open Newtonsoft.Json
 
 let OfYaml<'T> (yaml: string) =
-    eprintfn "DEBUG/YAMLsrc=%s" yaml
-    let json =
-        if String.IsNullOrWhiteSpace yaml then "{}" else
-        let meta = new StringReader(yaml)
-        let deserializer =
-            (new DeserializerBuilder())
-                .WithNamingConvention(PascalCaseNamingConvention())
-                .Build()
-        let serializer = (new SerializerBuilder()).JsonCompatible().Build()
-        let yaml = deserializer.Deserialize(meta)
-        eprintfn "DEBUG/YAML=%A" yaml
-        serializer.Serialize(yaml)
-    JsonConvert.DeserializeObject<'T>(json)
+    let deserializer =
+        (new DeserializerBuilder())
+            .Build()
+    if String.IsNullOrWhiteSpace yaml then
+        deserializer.Deserialize<'T>("{}")
+    else
+    let yaml = deserializer.Deserialize<'T>(yaml)
+    eprintfn "DEBUG/YAML=%A" yaml
+    yaml
 
 let private delimRE = Regex("^---\\w*\r?$", RegexOptions.Compiled ||| RegexOptions.Multiline)
 

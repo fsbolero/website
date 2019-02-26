@@ -3,33 +3,37 @@ module Website.Docs
 open System
 open System.IO
 open Markdig
+open Website
 
-let private pipeline =
-    MarkdownPipelineBuilder()
-        .UseAdvancedExtensions()
-        .UseYamlFrontMatter()
-        .Build()
-
-let private (</>) x y = Path.Combine(x, y)
-
-let private baseDir = __SOURCE_DIRECTORY__ </> "docs"
-
-type Document =
+type [<CLIMutable>] Document =
     {
-        title: string
+        title: string option
         content: string
     }
 
-let private parseFile fullPath =
-    let header, content =
-        fullPath
-        |> File.ReadAllText
-        |> Yaml.SplitHeader
-    let content = Markdown.ToHtml(content, pipeline)
-    { Yaml.OfYaml header with content = content }
+[<AutoOpen>]
+module private Impl =
+
+    let pipeline =
+        MarkdownPipelineBuilder()
+            .UseAdvancedExtensions()
+            .UseYamlFrontMatter()
+            .Build()
+
+    let (</>) x y = Path.Combine(x, y)
+
+    let baseDir = __SOURCE_DIRECTORY__ </> "docs"
+
+    let parseFile fullPath =
+        let header, content =
+            fullPath
+            |> File.ReadAllText
+            |> Yaml.SplitHeader
+        let content = Markdown.ToHtml(content, pipeline)
+        { Yaml.OfYaml header with content = content }
 
 let Pages =
-  try
+    try
     Directory.GetFiles(baseDir, "*.md", SearchOption.AllDirectories)
     |> Array.filter (fun fullPath ->
         let filename = Path.GetFileNameWithoutExtension(fullPath)
@@ -37,11 +41,12 @@ let Pages =
     )
     |> Array.map (fun fullPath ->
         let path = fullPath.[baseDir.Length..].Replace('\\', '/').Trim('/')
+        eprintfn "Parsing %s" path
         let path = path.[..path.Length - 4] // Trim .md
         path, parseFile fullPath)
     |> dict
-  with exn ->
-    eprintfn "%A" exn
+    with exn ->
+    eprintfn "### %A" exn
     reraise()
 
 let Sidebar =

@@ -12,5 +12,4 @@ nuget WebSharper.FSharp
 nuget WebSharper.HighlightJs
 nuget WebSharper.UI
 nuget DotLiquid
-nuget Newtonsoft.Json
 nuget YamlDotNet

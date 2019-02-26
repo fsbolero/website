@@ -77,11 +77,11 @@ highlighter: rouge
 #-------------------------------
 # NOTE: these are ignored
 #-------------------------------
-sass:
-  sass_dir: _sass
-  style: :compressed
-plugins: [jekyll-paginate]
-theme: jekyll-theme-type
-exclude:
-  - Gemfile
-  - Gemfile.lock
+# sass:
+#   sass_dir: _sass
+#   style: :compressed
+# plugins: [jekyll-paginate]
+# theme: jekyll-theme-type
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock

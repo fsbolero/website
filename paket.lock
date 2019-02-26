@@ -40,7 +40,6 @@ NUGET
     Microsoft.NETCore.Targets (2.1)
     Mono.WebAssembly.Interop (0.7)
       Microsoft.JSInterop (>= 0.7)
-    Newtonsoft.Json (12.0.1)
     runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
     runtime.debian.9-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
     runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)

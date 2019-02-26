@@ -68,7 +68,7 @@ module Site =
             .Sidebar(Doc.Verbatim Docs.Sidebar)
             .Content(Doc.Verbatim doc.content)
             .Doc()
-        |> Page (Option.ofObj doc.title)
+        |> Page doc.title
 
     [<Website>]
     let Main, BlogPages =
