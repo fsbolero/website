@@ -28,6 +28,7 @@ module Client =
         )
 
 module Site =
+    open WebSharper.UI.Html
     open WebSharper.UI.Server
     open Website.Blogs
     open Website.Blogs.Jekyll
@@ -63,10 +64,13 @@ module Site =
             .Doc()
         |> Page None
 
+    let PlainHtml html =
+        div [Attr.Create "ws-preserve" ""] [Doc.Verbatim html]
+
     let DocPage (doc: Docs.Document) =
         MainTemplate.DocsBody()
-            .Sidebar(Doc.Verbatim Docs.Sidebar)
-            .Content(Doc.Verbatim doc.content)
+            .Sidebar(PlainHtml Docs.Sidebar)
+            .Content(PlainHtml doc.content)
             .Doc()
         |> Page doc.title
 
