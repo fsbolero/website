@@ -5,8 +5,7 @@ open System.IO
 open WebSharper.Sitelets
 open WebSharper.UI
 open WebSharper.UI.Server
-open YamlDotNet.Serialization
-open YamlDotNet.Serialization.NamingConventions
+open Website
 
 module Helpers =
     open System.Text.RegularExpressions
@@ -109,28 +108,6 @@ module Runtime =
             content: string
         }
 
-        /// Split lines into a YAML header and the rest of the file
-        static member SplitIntoHeaderAndContent (lines: string[]) =
-            let rec extractHeader started (header: string[]) = function
-                | line :: rest when line = "---" ->
-                    if started then
-                        header, List.toArray rest
-                    else
-                        extractHeader true [||] rest
-                | line :: rest ->
-                    if started then
-                        extractHeader true (Array.append header [|line|]) rest
-                    else
-                        [||], lines
-                | [] ->
-                    [||], lines
-            lines
-            |> Array.toList
-            |> extractHeader false [||]
-            |> fun (header, content) ->
-                let concat = String.concat Environment.NewLine
-                concat header, concat content
-
     type Page =
         {
             title: string
@@ -214,8 +191,8 @@ module Runtime =
                     eprintfn "---> Added %s to the posts collection" path
                     let header, content =
                         path
-                        |> File.ReadAllLines
-                        |> Post.SplitIntoHeaderAndContent
+                        |> File.ReadAllText
+                        |> Yaml.SplitHeader
                     filename,
                     ({
                         url = sprintf "/blog/%s" filename // ctx.Link (EndPoint.BlogPage filename)
@@ -283,22 +260,6 @@ module Jekyll =
                     .Build()
             Markdown.ToHtml(s, pipeline)
 
-    module Yaml =
-        open YamlDotNet.Serialization
-        open Newtonsoft.Json
-
-        let OfYaml<'T> (yaml: string) =
-            let meta = new StringReader(yaml)
-            let deserializer =
-                (new DeserializerBuilder())
-                    .WithNamingConvention(PascalCaseNamingConvention())
-                    .Build()
-            let serializer = (new SerializerBuilder()).JsonCompatible().Build()
-            let yaml = deserializer.Deserialize(meta)
-            eprintfn "DEBUG/YAML=%A" yaml
-            let json = serializer.Serialize(yaml)
-            JsonConvert.DeserializeObject<'T>(json)
-
     module Liquid =
         /// Given a type which is an F# record containing seq<_>, list<_>, array<_>, option and
         /// other records, register the type with DotLiquid so that its fields are accessible
@@ -362,12 +323,12 @@ module Jekyll =
                 // .md files are preferred and take precedence over .html ones
                 if FILE ".md" |> File.Exists then
                     FILE ".md"
-                    |> File.ReadAllLines
-                    |> Runtime.Post.SplitIntoHeaderAndContent
+                    |> File.ReadAllText
+                    |> Yaml.SplitHeader
                 elif FILE ".html" |> File.Exists then
                     FILE ".html"
-                    |> File.ReadAllLines
-                    |> Runtime.Post.SplitIntoHeaderAndContent
+                    |> File.ReadAllText
+                    |> Yaml.SplitHeader
                 else
                     raise <| NotFound (FILE ".md")
             // Get the JSON representation of the YAML header
@@ -398,8 +359,8 @@ module Jekyll =
                         page.layout
                 let masterHeader, masterContent =
                     Path.Combine(__SOURCE_DIRECTORY__, config.LayoutsFolder, template + ".html")
-                    |> File.ReadAllLines
-                    |> Runtime.Post.SplitIntoHeaderAndContent
+                    |> File.ReadAllText
+                    |> Yaml.SplitHeader
                 // If the template doesn't specify a master layout, use it as source
                 if String.IsNullOrEmpty header then
                     masterContent, content |> Liquid.WithLiquidTemplate model |> Markdown.ToHtml

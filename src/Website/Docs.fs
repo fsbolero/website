@@ -16,38 +16,20 @@ let private baseDir = __SOURCE_DIRECTORY__ </> "docs"
 
 type Document =
     {
-        title: option<string>
+        title: string
         content: string
     }
 
-/// Markdig can ignore the frontmatter, but it doesn't actually parse its contents
-/// so we have to do it ourselves :(
-let readMetadata (rawText: string) doc =
-    let parseLine doc (line: string) =
-        let line = line.Trim()
-        match line.IndexOf(':') with
-        | -1 -> doc
-        | i ->
-            let value = line.[i + 1..].Trim()
-            match line.[..i - 1].Trim() with
-            | "title" -> { doc with title = Some value }
-            | _ -> doc
-    if not (rawText.StartsWith("---")) then doc else
-    match rawText.IndexOf("---", 4) with
-    | -1 -> doc
-    | i ->
-        let lines = rawText.[4..i-1].Split([|'\n'|], StringSplitOptions.RemoveEmptyEntries)
-        Array.fold parseLine doc lines
-
 let private parseFile fullPath =
-    let rawText = File.ReadAllText(fullPath)
-    {
-        title = None
-        content = Markdown.ToHtml(rawText, pipeline)
-    }
-    |> readMetadata rawText
+    let header, content =
+        fullPath
+        |> File.ReadAllText
+        |> Yaml.SplitHeader
+    let content = Markdown.ToHtml(content, pipeline)
+    { Yaml.OfYaml header with content = content }
 
 let Pages =
+  try
     Directory.GetFiles(baseDir, "*.md", SearchOption.AllDirectories)
     |> Array.filter (fun fullPath ->
         let filename = Path.GetFileNameWithoutExtension(fullPath)
@@ -58,6 +40,9 @@ let Pages =
         let path = path.[..path.Length - 4] // Trim .md
         path, parseFile fullPath)
     |> dict
+  with exn ->
+    eprintfn "%A" exn
+    reraise()
 
 let Sidebar =
     let doc = parseFile (baseDir </> "_Sidebar.md")

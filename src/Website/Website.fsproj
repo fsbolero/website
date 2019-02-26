@@ -5,6 +5,7 @@
     <WebSharperUseNetFxCompiler>True</WebSharperUseNetFxCompiler>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="YamlHeader.fs" />
     <Compile Include="Blogs.fs" />
     <Compile Include="Docs.fs" />
     <Compile Include="Main.fs" />

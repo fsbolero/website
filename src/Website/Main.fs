@@ -68,7 +68,7 @@ module Site =
             .Sidebar(Doc.Verbatim Docs.Sidebar)
             .Content(Doc.Verbatim doc.content)
             .Doc()
-        |> Page doc.title
+        |> Page (Option.ofObj doc.title)
 
     [<Website>]
     let Main, BlogPages =
@@ -82,7 +82,7 @@ module Site =
             let site =
                 Path.Combine(__SOURCE_DIRECTORY__, "_config.yml")
                 |> File.ReadAllText
-                |> Jekyll.Yaml.OfYaml<Site>
+                |> Yaml.OfYaml<Site>
             printfn "site=%A" site
             let paginator = Runtime.Paginator.Build(blogConfig, site)
             printfn "paginator=%A" paginator
