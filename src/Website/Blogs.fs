@@ -184,7 +184,7 @@ module Runtime =
         member this.UpdatePage(slug: string, page: Page) =
             //let index, post = this.FindIndex(page, f)
             //{ page with
-            //    next = 
+            //    next =
             //    previous: Page
             //}
             page
@@ -300,7 +300,7 @@ module Jekyll =
             JsonConvert.DeserializeObject<'T>(json)
 
     module Liquid =
-        /// Given a type which is an F# record containing seq<_>, list<_>, array<_>, option and 
+        /// Given a type which is an F# record containing seq<_>, list<_>, array<_>, option and
         /// other records, register the type with DotLiquid so that its fields are accessible
         /// This is a copy of https://github.com/SuaveIO/suave/blob/master/src/Suave.DotLiquid/Library.fs
         let safe =
@@ -308,7 +308,7 @@ module Jekyll =
             fun f -> lock o f
 
         // Register types with DotLiquid by unfolding them.
-        // 
+        //
         let RegisterTypeTree ty =
             let registered = Dictionary<_, _>()
             let rec loop ty =
@@ -319,20 +319,22 @@ module Jekyll =
                             ty,
                             fields |> Array.map (fun f -> f.Name)
                         )
+                        registered.[ty] <- true
                         for f in fields do loop f.PropertyType
                     elif ty.IsGenericType then
                         let t = ty.GetGenericTypeDefinition()
+                        registered.[ty] <- true
                         eprintfn "Checking generic type: %A" t
                         if t = typedefof<seq<_>> || t = typedefof<list<_>>  then
-                            loop (ty.GetGenericArguments().[0])          
+                            loop (ty.GetGenericArguments().[0])
                         elif t = typedefof<option<_>> then
                             Template.RegisterSafeType(ty, [|"Value"|])
-                            loop (ty.GetGenericArguments().[0])            
-                    elif ty.IsArray then          
+                            loop (ty.GetGenericArguments().[0])
+                    elif ty.IsArray then
+                        registered.[ty] <- true
                         loop (ty.GetElementType())
                     else
                         eprintfn "--- type fell through: %A" ty
-                registered.[ty] <- true
             safe (fun () -> loop ty)
 
         let WithLiquidTemplate<'T> (model: 'T) template =
