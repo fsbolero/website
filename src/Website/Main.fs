@@ -14,19 +14,6 @@ type EndPoint =
 
 type MainTemplate = Templating.Template<"index.html">
 
-[<JavaScript>]
-module Client =
-    open WebSharper.HighlightJS
-    open WebSharper.JavaScript
-
-    [<Require(typeof<Resources.Languages.Fsharp>)>]
-    [<Require(typeof<Resources.Styles.Vs>)>]
-    let HighlightCode() =
-        JS.Document.QuerySelectorAll("code[class^=language-]").ForEach(
-            (fun (node, _, _, _) -> Hljs.HighlightBlock(node)),
-            JS.Undefined
-        )
-
 module Site =
     open WebSharper.UI.Html
     open WebSharper.UI.Server
@@ -40,23 +27,26 @@ module Site =
         "Try F#", "https://tryfsharp.fsbolero.io"
     ]
 
+    let private head =
+        __SOURCE_DIRECTORY__ + "/js/Client.head.html"
+        |> File.ReadAllText
+        |> Doc.Verbatim
+
     let Page (title: option<string>) (body: Doc) =
         MainTemplate()
 #if !DEBUG
             .ReleaseMin(".min")
 #endif
+            .Head(head)
             .Title(
                 match title with
                 | None -> ""
                 | Some t -> t + " | "
             )
-            .ShowDrawer(fun e -> e.Vars.DrawerShown := "shown")
-            .HideDrawer(fun e -> e.Vars.DrawerShown := "")
             .TopMenu([for text, url in Menu -> MainTemplate.TopMenuItem().Text(text).Url(url).Doc()])
             .DrawerMenu([for text, url in Menu -> MainTemplate.DrawerMenuItem().Text(text).Url(url).Doc()])
             .Body(body)
-            .Elt()
-            .OnAfterRender(fun _ -> Client.HighlightCode())
+            .Doc()
         |> Content.Page
 
     let HomePage () =

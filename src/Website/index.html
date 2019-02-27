@@ -8,11 +8,12 @@
   <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
   <meta ws-replace="meta" />
   <link rel="stylesheet" href="/css/all${ReleaseMin}.css" />
+  <script ws-replace="Head"></script>
 </head>
 <body>
   <header class="navbar overlay-bar">
     <div class="navbar-brand">
-      <a class="navbar-item is-hoverable" ws-onclick="ShowDrawer"><i class="fa fa-bars"></i></a>
+      <a class="navbar-item is-hoverable" onclick="Website.Client.ToggleDrawer()"><i class="fa fa-bars"></i></a>
       <span class="navbar-item"><a href="/">Bolero</a></span>
     </div>
     <div class="navbar-menu">
@@ -21,9 +22,8 @@
       </nav>
     </div>
   </header>
-  <div class="drawer-backdrop ${DrawerShown}" ws-onclick="HideDrawer">
-    <input type="hidden" ws-var="DrawerShown" /><!--Force DrawerShown to be a Var-->
-    <div id="left-drawer" class="lhs-drawer ${DrawerShown}">
+  <div class="drawer-backdrop" onclick="Website.Client.ToggleDrawer()">
+    <div id="left-drawer" class="lhs-drawer">
       <span class="navbar-item"><a href="/">Bolero</a></span>
       <nav ws-hole="DrawerMenu">
         <a ws-template="DrawerMenuItem" href="${Url}" class="navbar-item nav-menu-link">${Text}</a>
@@ -134,7 +134,7 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.6.0/lazyload.min.js"></script>
   <script type="text/javascript">new LazyLoad();</script>
-  <script ws-replace="scripts"></script>
+  <script src="/js/Client${ReleaseMin}.js"></script>
   <section ws-template="BuzzRight" class="hero is-light">
     <div class="hero-body">
       <div class="container">

@@ -11,6 +11,7 @@
     <Compile Include="Main.fs" />
     <Content Include="**/*.html" />
     <Content Include="img/**/*.*" />
+    <Content Include="js/**/*.*" />
     <Content Include="scss/**/*.*" />
     <Content Include="css/**/*.*" />
     <Content Include="fonts/**/*.*" />
@@ -24,6 +25,9 @@
     <None Include="package-lock.json" />
     <None Include="wsconfig.json" />
     <Content Include="Properties/launchSettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Client\Client.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
