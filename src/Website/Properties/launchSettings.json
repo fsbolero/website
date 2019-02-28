@@ -3,7 +3,7 @@
     "Website": {
       "commandName": "Executable",
       "executablePath": "$(MSBuildProjectDirectory)/../../.tools/dotnet-serve.exe",
-      "commandLineArgs": "-d $(MSBuildProjectDirectory)/../../build -p:55862",
+      "commandLineArgs": "-d $(MSBuildProjectDirectory)/../../build -p:55862 --default-extensions:.html",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:55862/"
     }

@@ -4,9 +4,9 @@ Documentation
 
 {.menu-list}
 * [Getting Started](/docs)
-* [Writing HTML](/docs/HTML.html)
-* [HTML templates](/docs/Templating.html)
-* [Using Elmish](/docs/Elmish.html)
-* [Routing](/docs/Routing.html)
-* [Remoting](/docs/Remoting.html)
+* [Writing HTML](/docs/HTML)
+* [HTML templates](/docs/Templating)
+* [Using Elmish](/docs/Elmish)
+* [Routing](/docs/Routing)
+* [Remoting](/docs/Remoting)
 :::

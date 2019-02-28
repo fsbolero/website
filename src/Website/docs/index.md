@@ -18,11 +18,11 @@ Bolero is a set of free and open-source libraries and tools to write [**WebAssem
 
 Bolero is built on top of [Blazor](https://blazor.net/) and adds a lot of features designed specifically to work in F#:
 
-* [Elmish](Elmish.html) Model-View-Update architecture for a functional approach to reactive content.
-* [HTML-in-F#](HTML.html) syntax inspired by WebSharper.UI and Fable.
-* Alternatively, [HTML templates](Templating.html) with hot reloading provide a comfortable design experience.
-* [URL Routing](Routing.html) the F# way, automatically matching URLs with F# union types.
-* Easy [Remoting](Remoting.html) with an ASP.NET Core server side.
+* [Elmish](Elmish) Model-View-Update architecture for a functional approach to reactive content.
+* [HTML-in-F#](HTML) syntax inspired by WebSharper.UI and Fable.
+* Alternatively, [HTML templates](Templating) with hot reloading provide a comfortable design experience.
+* [URL Routing](Routing) the F# way, automatically matching URLs with F# union types.
+* Easy [Remoting](Remoting) with an ASP.NET Core server side.
 * F#-specific optimizations: Bolero strips F# metadata from compiled assemblies, reducing the download size of the application.
 
 # Getting started
@@ -64,8 +64,8 @@ The solution you just created comprises two projects.
     
         If you want to add styles and images to your application, this is the folder to put them.
 
-    * `Startup.fs` sets up Blazor to get the application started. You will rarely need to touch it: essentially only to set up [remoting](Remoting.html), if you want to use it.
+    * `Startup.fs` sets up Blazor to get the application started. You will rarely need to touch it: essentially only to set up [remoting](Remoting), if you want to use it.
 
-* `src/HelloWorld.Server` is an ASP.NET Core application that serves as the host. This project is optional: if you pas `--server=false` when creating the solution with `dotnet new`, then it will not be created. Note however that it is necessary for [templating hot reloading](Templating.html#hot-reloading) and [remoting](Remoting.html).
+* `src/HelloWorld.Server` is an ASP.NET Core application that serves as the host. This project is optional: if you pas `--server=false` when creating the solution with `dotnet new`, then it will not be created. Note however that it is necessary for [templating hot reloading](Templating#hot-reloading) and [remoting](Remoting).
 
     * `Startup.fs`, similarly to its client counterpart, sets up ASP.NET Core to get the server started.
