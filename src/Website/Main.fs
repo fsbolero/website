@@ -33,7 +33,7 @@ module Site =
         |> File.ReadAllText
         |> Doc.Verbatim
 
-    let Page (title: option<string>) hasBanner (body: Doc) =
+    let Page (title: option<string>) hasBanner (docs: Docs.Docs) (body: Doc) =
         MainTemplate()
 #if !DEBUG
             .ReleaseMin(".min")
@@ -48,13 +48,20 @@ module Site =
             .TopMenu([for text, url in Menu -> MainTemplate.TopMenuItem().Text(text).Url(url).Doc()])
             .DrawerMenu([for text, url in Menu -> MainTemplate.DrawerMenuItem().Text(text).Url(url).Doc()])
             .Body(body)
+            .FooterDocs([
+                for item in docs.sidebar do
+                    yield MainTemplate.FooterDoc()
+                        .Title(item.title)
+                        .Url(item.url)
+                        .Doc()
+            ])
             .Doc()
         |> Content.Page
 
-    let HomePage () =
+    let HomePage docs =
         MainTemplate.HomeBody()
             .Doc()
-        |> Page None true
+        |> Page None true docs
 
     let PlainHtml html =
         div [Attr.Create "ws-preserve" ""] [Doc.Verbatim html]
@@ -99,7 +106,7 @@ module Site =
             .Sidebar(DocSidebar docs doc)
             .Content(PlainHtml doc.content)
             .Doc()
-        |> Page (Some doc.title) false
+        |> Page (Some doc.title) false docs
 
     let blogConfig =
         {
@@ -121,7 +128,7 @@ module Site =
             printfn "paginator=%A" paginator
             match action with
             | Home ->
-                HomePage ()
+                HomePage docs
             | BlogPage p ->
                 Jekyll.BlogPage ctx blogConfig (site, paginator) (SlugType.BlogPost p)
             | Docs p ->
