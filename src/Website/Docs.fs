@@ -14,7 +14,8 @@ type [<CLIMutable>] SidebarItem =
 
 type [<CLIMutable>] Page =
     {
-        title: string option
+        title: string
+        subtitle: string
         url: string
         content: string
         headers: SidebarItem[]
@@ -39,7 +40,7 @@ module private Impl =
 
     let baseDir = __SOURCE_DIRECTORY__ </> "docs"
 
-    let headerRE = Regex("^## (.*)", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    let headerRE = Regex("^### (.*)", RegexOptions.Compiled ||| RegexOptions.Multiline)
 
     let parseFile fullPath =
         let header, content =
@@ -55,9 +56,11 @@ module private Impl =
                 }
             |]
         let content = Markdown.ToHtml(content, pipeline)
-        { Yaml.OfYaml<Page> header with
+        let meta = Yaml.OfYaml<Page> header
+        { meta with
             content = content
             headers = headers
+            subtitle = Markdown.ToHtml("{.subtitle}\n" + meta.subtitle, pipeline)
         }
 
     let parsePages() =
@@ -76,10 +79,7 @@ module private Impl =
         |> Yaml.OfYaml<SidebarItem[]>
         |> Array.map (fun item ->
             let page = pages.Values |> Seq.find (fun page -> page.url = item.url)
-            let title =
-                match item.title, page.title with
-                | null, None -> failwithf "Sidebar item has no title: %s" item.url
-                | null, Some t | t, _ -> t
+            let title = match item.title with null -> page.title | t -> t
             { item with title = title }
         )
 

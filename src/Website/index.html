@@ -11,7 +11,7 @@
   <script ws-replace="Head"></script>
 </head>
 <body>
-  <header class="navbar overlay-bar">
+  <header class="navbar ${NavbarOverlay}">
     <div class="navbar-brand">
       <a class="navbar-item is-hoverable" onclick="Website.Client.ToggleDrawer()"><i class="fa fa-bars"></i></a>
       <span class="navbar-item"><a href="/">Bolero</a></span>
@@ -117,15 +117,19 @@
       </ws-BuzzRight>
     </div>
     <div ws-children-template="DocsBody">
-      <section class="hero is-dark page-banner">
-        <div class="hero-body has-text-centered">
-          <h1 class="title is-spaced">Bolero</h1>
-        </div>
-      </section>
       <section class="with-sidebar-background"><!-- no section class: it's on the columns instead -->
         <div class="container">
           <div class="columns is-gapless">
-            <div class="column is-one-quarter sidebar-column">
+            <div class="column content markdown-column">
+              <section class="hero">
+                <div class="hero-body">
+                  <h1 class="title">${Title}</h1>
+                  <p class="subtitle" ws-replace="Subtitle"></p>
+                </div>
+              </section>
+              <section class="section" ws-hole="Content"></section>
+            </div>
+            <div class="column is-one-quarter-tablet is-one-fifth-desktop sidebar-column">
               <section class="section">
                 <div class="menu">
                   <div class="menu-label">Documentation</div>
@@ -141,9 +145,6 @@
                   </ul>
                 </div>
               </section>
-            </div>
-            <div class="column content markdown-column">
-              <section class="section" ws-hole="Content"></section>
             </div>
           </div>
         </div>

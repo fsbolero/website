@@ -33,11 +33,12 @@ module Site =
         |> File.ReadAllText
         |> Doc.Verbatim
 
-    let Page (title: option<string>) (body: Doc) =
+    let Page (title: option<string>) hasBanner (body: Doc) =
         MainTemplate()
 #if !DEBUG
             .ReleaseMin(".min")
 #endif
+            .NavbarOverlay(if hasBanner then "overlay-bar" else "")
             .Head(head)
             .Title(
                 match title with
@@ -53,7 +54,7 @@ module Site =
     let HomePage () =
         MainTemplate.HomeBody()
             .Doc()
-        |> Page None
+        |> Page None true
 
     let PlainHtml html =
         div [Attr.Create "ws-preserve" ""] [Doc.Verbatim html]
@@ -93,10 +94,12 @@ module Site =
 
     let DocPage (docs: Docs.Docs) (doc: Docs.Page) =
         MainTemplate.DocsBody()
+            .Title(doc.title)
+            .Subtitle(Doc.Verbatim doc.subtitle)
             .Sidebar(DocSidebar docs doc)
             .Content(PlainHtml doc.content)
             .Doc()
-        |> Page doc.title
+        |> Page (Some doc.title) false
 
     let blogConfig =
         {
