@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/fsbolero/fsbolero.github.io#readme",
   "devDependencies": {
-    "bulma": "^0.6.1",
-    "doctoc": "^1.4.0"
+    "bulma": "^0.6.1"
   }
 }

@@ -1,6 +1,7 @@
 module Website.Main
 
 open System
+open System.Collections.Generic
 open System.IO
 open WebSharper
 open WebSharper.Sitelets
@@ -57,21 +58,56 @@ module Site =
     let PlainHtml html =
         div [Attr.Create "ws-preserve" ""] [Doc.Verbatim html]
 
-    let DocPage (doc: Docs.Document) =
+    let DocSidebar (docs: Docs.Docs) (doc: Docs.Page) =
+        let mutable foundCurrent = false
+        let res =
+            docs.sidebar
+            |> Array.map (fun item ->
+                let tpl =
+                    MainTemplate.DocsSidebarItem()
+                        .Title(item.title)
+                        .Url(item.url)
+                let tpl =
+                    if item.url = doc.url then
+                        if foundCurrent then
+                            failwithf "Doc present twice in the sidebar: %s" doc.url
+                        foundCurrent <- true
+                        let children =
+                            doc.headers
+                            |> Array.map (fun header ->
+                                MainTemplate.DocsSidebarSubItem()
+                                    .Title(header.title)
+                                    .Url(header.url)
+                                    .Doc()
+                            )
+                        tpl.Children(children)
+                            .LinkAttr(attr.``class`` "is-active")
+                    else
+                        tpl.SubItemsAttr(attr.``class`` "is-hidden")
+                tpl.Doc()
+            )
+            |> Doc.Concat
+        if not foundCurrent then
+            failwithf "Doc missing from the sidebar: %s" doc.url
+        res
+
+    let DocPage (docs: Docs.Docs) (doc: Docs.Page) =
         MainTemplate.DocsBody()
-            .Sidebar(PlainHtml Docs.Sidebar)
+            .Sidebar(DocSidebar docs doc)
             .Content(PlainHtml doc.content)
             .Doc()
         |> Page doc.title
 
-    [<Website>]
-    let Main, BlogPages =
-        let blogConfig =
-            {
-                PostsFolder = "_posts"
-                LayoutsFolder = "_layouts"
-            }
-        let blogPages = Runtime.Paginator.BuildPostList blogConfig
+    let blogConfig =
+        {
+            PostsFolder = "_posts"
+            LayoutsFolder = "_layouts"
+        }
+
+    let BlogPages() =
+        Runtime.Paginator.BuildPostList blogConfig
+
+    let Main docs =
         Application.MultiPage (fun ctx action ->
             let site =
                 Path.Combine(__SOURCE_DIRECTORY__, "_config.yml")
@@ -86,18 +122,20 @@ module Site =
             | BlogPage p ->
                 Jekyll.BlogPage ctx blogConfig (site, paginator) (SlugType.BlogPost p)
             | Docs p ->
-                DocPage Docs.Pages.[p]
-        ), blogPages
+                DocPage docs docs.pages.[p]
+        )
 
 [<Sealed>]
 type Website() =
+    let docs = Docs.Compute()
+
     interface IWebsite<EndPoint> with
-        member this.Sitelet = Site.Main
+        member this.Sitelet = Site.Main docs
         member this.Actions = [
             yield Home
-            for p in Docs.Pages.Keys do
+            for p in docs.pages.Keys do
                 yield Docs p
-            for (path, filename, (y, m, d), slug, ext) in Site.BlogPages do
+            for (path, filename, (y, m, d), slug, ext) in Site.BlogPages() do
                 yield BlogPage filename
         ]
 

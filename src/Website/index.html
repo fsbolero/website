@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -122,14 +122,28 @@
           <h1 class="title is-spaced">Bolero</h1>
         </div>
       </section>
-      <section class="section">
-        <div class="container">
-          <div class="columns">
-            <div class="column is-one-quarter" ws-hole="Sidebar"></div>
-            <div class="column content markdown-column" ws-hole="Content"></div>
+      <div class="container">
+        <div class="sidebar-background"></div>
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <div class="menu sidebar">
+              <div class="menu-label">Documentation</div>
+              <ul class="menu-list" ws-hole="Sidebar">
+                <li ws-template="DocsSidebarItem">
+                  <a ws-attr="LinkAttr" href="${Url}">${Title}</a>
+                  <ul ws-attr="SubItemsAttr" ws-hole="Children">
+                    <li ws-template="DocsSidebarSubItem">
+                      <a href="${Url}">${Title}</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="column content markdown-column" ws-hole="Content">
           </div>
         </div>
-      </section>
+      </div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.6.0/lazyload.min.js"></script>
