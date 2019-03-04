@@ -39,7 +39,7 @@ module private Impl =
 
     let baseDir = __SOURCE_DIRECTORY__ </> "docs"
 
-    let headerRE = Regex("^# (.*)", RegexOptions.Compiled ||| RegexOptions.Multiline)
+    let headerRE = Regex("^## (.*)", RegexOptions.Compiled ||| RegexOptions.Multiline)
 
     let parseFile fullPath =
         let header, content =
