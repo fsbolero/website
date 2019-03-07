@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -12,14 +12,22 @@
 </head>
 <body>
   <header class="navbar ${NavbarOverlay}">
-    <div class="navbar-brand">
-      <a class="navbar-item is-hoverable" onclick="Website.Client.ToggleDrawer()"><i class="fa fa-bars"></i></a>
-      <span class="navbar-item"><a href="/">Bolero</a></span>
-    </div>
-    <div class="navbar-menu">
-      <nav class="navbar-end" ws-hole="TopMenu">
-        <a ws-template="TopMenuItem" href="${Url}" class="navbar-item is-hoverable has-text-weight-bold">${Text}</a>
-      </nav>
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item is-hoverable" onclick="Website.Client.ToggleDrawer()"><i class="fa fa-bars"></i></a>
+        <span class="navbar-item"><a href="/">Bolero</a></span>
+      </div>
+      <div class="navbar-menu">
+        <nav class="navbar-start" ws-hole="TopMenu">
+          <a ws-template="TopMenuItem" href="${Url}" class="navbar-item is-hoverable has-text-weight-bold">${Text}</a>
+          <div ws-template="TopMenuItemWithDropdown" class="navbar-item is-hoverable has-text-weight-bold has-dropdown">
+            <a href="${Url}" class="navbar-link is-arrowless">${Text}</a>
+            <div class="navbar-dropdown has-text-weight-normal" ws-hole="DropdownItems">
+              <a ws-template="TopMenuDropdownItem" class="navbar-item" href="${Url}">${Text}</a>
+            </div>
+          </div>
+        </nav>
+      </div>
     </div>
   </header>
   <div class="drawer-backdrop" onclick="Website.Client.ToggleDrawer()">

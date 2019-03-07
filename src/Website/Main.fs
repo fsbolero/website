@@ -45,16 +45,37 @@ module Site =
                 | None -> ""
                 | Some t -> t + " | "
             )
-            .TopMenu([for text, url in Menu -> MainTemplate.TopMenuItem().Text(text).Url(url).Doc()])
-            .DrawerMenu([for text, url in Menu -> MainTemplate.DrawerMenuItem().Text(text).Url(url).Doc()])
-            .Body(body)
-            .FooterDocs([
-                for item in docs.sidebar do
-                    yield MainTemplate.FooterDoc()
-                        .Title(item.title)
-                        .Url(item.url)
+            .TopMenu(Menu |> List.map (function
+                | text, ("/docs" as url) ->
+                    let items = docs.sidebar |> Array.map (fun item ->
+                        MainTemplate.TopMenuDropdownItem()
+                            .Text(item.title)
+                            .Url(item.url)
+                            .Doc())
+                    MainTemplate.TopMenuItemWithDropdown()
+                        .Text(text)
+                        .Url(url)
+                        .DropdownItems(items)
                         .Doc()
-            ])
+                | text, url ->
+                    MainTemplate.TopMenuItem()
+                        .Text(text)
+                        .Url(url)
+                        .Doc()
+            ))
+            .DrawerMenu(Menu |> List.map (fun (text, url) ->
+                MainTemplate.DrawerMenuItem()
+                    .Text(text)
+                    .Url(url)
+                    .Doc()
+            ))
+            .Body(body)
+            .FooterDocs(docs.sidebar |> Array.map (fun item ->
+                MainTemplate.FooterDoc()
+                    .Title(item.title)
+                    .Url(item.url)
+                    .Doc()
+            ))
             .Doc()
         |> Content.Page
 
