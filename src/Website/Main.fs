@@ -24,7 +24,7 @@ module Site =
     let Menu = [
         "Home", "/"
         "Documentation", "/docs"
-        "Blog", "/blog"
+        //"Blog", "/blog"
         "Try F#", "https://tryfsharp.fsbolero.io"
     ]
 
