@@ -67,6 +67,17 @@ module Site =
                 MainTemplate.DrawerMenuItem()
                     .Text(text)
                     .Url(url)
+                    .Children(
+                        match url with
+                        | "/docs" ->
+                            ul [] (docs.sidebar |> Array.map (fun item ->
+                                MainTemplate.DrawerMenuItem()
+                                    .Text(item.title)
+                                    .Url(item.url)
+                                    .Doc()
+                            ))
+                        | _ -> Doc.Empty
+                    )
                     .Doc()
             ))
             .Body(body)

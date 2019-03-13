@@ -36,9 +36,13 @@
   </header>
   <div class="drawer-backdrop" onclick="Website.Client.ToggleDrawer()">
     <div id="left-drawer" class="lhs-drawer">
-      <span class="navbar-item"><a href="/">Bolero</a></span>
-      <nav ws-hole="DrawerMenu">
-        <a ws-template="DrawerMenuItem" href="${Url}" class="navbar-item nav-menu-link">${Text}</a>
+      <nav class="menu">
+        <ul class="menu-list" ws-hole="DrawerMenu">
+          <li ws-template="DrawerMenuItem">
+            <a href="${Url}">${Text}</a>
+            <ul ws-replace="Children"></ul>
+          </li>
+        </ul>
       </nav>
     </div>
   </div>
