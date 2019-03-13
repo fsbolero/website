@@ -5,6 +5,7 @@ img/*
 css/*
 fonts/*
 js/*
+videos/*
 
 // For source maps:
 scss/*

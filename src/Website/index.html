@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -48,7 +48,7 @@
   </div>
   <div ws-replace="Body">
     <div ws-children-template="HomeBody">
-      <section class="hero is-large is-dark page-banner">
+      <section class="hero is-medium is-dark page-banner">
         <div class="hero-body has-text-centered">
           <h1 class="title is-spaced">Bolero: F# in WebAssembly</h1>
           <h2 class="subtitle">Develop SPAs with the full power of F# and .NET.</h2>
@@ -62,23 +62,25 @@
           </div>
         </div>
       </section>
-      <section class="hero is-dark">
-        <div class="hero-body has-text-centered">
-          <div class="container">
-            <h1 class="title is-spaced">Get started easily</h1>
-            <div class="columns">
-              <div class="column is-half-desktop is-offset-one-quarter-desktop">
-                <p class="subtitle">Install the project template:</p>
-                <pre class="is-large"><input readonly onclick="select()" value="dotnet new -i Bolero.Templates"></pre>
-                <p class="subtitle">Create a project:</p>
-                <pre class="is-large"><input readonly onclick="select()" value="dotnet new bolero-app -o MyApp"></pre>
-                <p class="subtitle">Build and run:</p>
-                <pre class="is-large"><input readonly onclick="select()" value="cd MyApp && dotnet run"></pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ws-BuzzLeft>
+        <Class>is-dark</Class>
+        <Title>Get started easily</Title>
+        <Text>
+          <p class="subtitle">Install the project template:</p>
+          <pre class="is-large"><input readonly onclick="select()" value="dotnet new -i Bolero.Templates"></pre>
+          <p class="subtitle">Create a project:</p>
+          <pre class="is-large"><input readonly onclick="select()" value="dotnet new bolero-app -o MyApp"></pre>
+          <p class="subtitle">Build and run:</p>
+          <pre class="is-large"><input readonly onclick="select()" value="cd MyApp && dotnet run -p src/MyApp.Server"></pre>
+          <p>&nbsp;</p>
+        </Text>
+        <DocUrl>/docs</DocUrl>
+        <Screenshot>
+          <video src="/videos/create-project.mp4" controls="" poster="/videos/create-project.png">
+            <img data-src="/videos/create-project.png" />
+          </video>
+        </Screenshot>
+      </ws-BuzzLeft>
       <ws-BuzzRight>
         <Title>F# on the client side, no JavaScript</Title>
         <Text>
@@ -90,8 +92,8 @@
           </p>
         </Text>
         <DocUrl>/docs/HTML</DocUrl>
-        <ScreenshotAlt>DOM code in F#</ScreenshotAlt>
-        <ScreenshotUrl>/img/fsharp.png</ScreenshotUrl>
+        <ScreenshotColumnClass>is-narrow</ScreenshotColumnClass>
+        <Screenshot><img alt="DOM code in F#" data-src="/img/fsharp.png"></Screenshot>
       </ws-BuzzRight>
       <ws-BuzzLeft>
         <Title>Model-View-Update architecture with Elmish</Title>
@@ -100,8 +102,8 @@
             with the popular Elmish library.</p>
         </Text>
         <DocUrl>/docs/Elmish</DocUrl>
-        <ScreenshotAlt>Elmish model and update</ScreenshotAlt>
-        <ScreenshotUrl>/img/elmish.png</ScreenshotUrl>
+        <ScreenshotColumnClass>is-narrow</ScreenshotColumnClass>
+        <Screenshot><img alt=""Elmish model and update data-src="/img/elmish.png"></Screenshot>
       </ws-BuzzLeft>
       <ws-BuzzRight>
         <Title>HTML templates with hot reloading</Title>
@@ -110,8 +112,8 @@
           <p class="subtitle">Bolero provides hot reloading of HTML template files for immediate feedback.</p>
         </Text>
         <DocUrl>/docs/Templating</DocUrl>
-        <ScreenshotAlt>HTML template and F# instantiation</ScreenshotAlt>
-        <ScreenshotUrl>/img/templating.png</ScreenshotUrl>
+        <ScreenshotColumnClass>is-narrow</ScreenshotColumnClass>
+        <Screenshot><img alt="HTML template and F# instantiation" data-src="/img/templating.png"></Screenshot>
       </ws-BuzzRight>
       <ws-BuzzLeft>
         <Title>Seamless server remoting</Title>
@@ -120,8 +122,8 @@
           <p class="subtitle">Easily integrate such a call in the Elmish update function.</p>
         </Text>
         <DocUrl>/docs/Remoting</DocUrl>
-        <ScreenshotAlt>Defining and calling a remote function</ScreenshotAlt>
-        <ScreenshotUrl>/img/remoting.png</ScreenshotUrl>
+        <ScreenshotColumnClass>is-narrow</ScreenshotColumnClass>
+        <Screenshot><img alt="Defining and calling a remote function" data-src="/img/remoting.png"></Screenshot>
       </ws-BuzzLeft>
       <ws-BuzzRight>
         <Title>Automated URL routing</Title>
@@ -130,8 +132,8 @@
             and Bolero will parse and generate URLs.</p>
         </Text>
         <DocUrl>/docs/Routing</DocUrl>
-        <ScreenshotAlt>Defining and using a route</ScreenshotAlt>
-        <ScreenshotUrl>/img/routing.png</ScreenshotUrl>
+        <ScreenshotColumnClass>is-narrow</ScreenshotColumnClass>
+        <Screenshot><img alt="Defining and using a route" data-src="/img/routing.png"></Screenshot>
       </ws-BuzzRight>
     </div>
     <div ws-children-template="DocsBody">
@@ -248,7 +250,7 @@
   <script src="/js/Client${ReleaseMin}.js"></script>
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <script async defer src="https://platform.twitter.com/widgets.js"></script>
-  <section ws-template="BuzzRight" class="hero is-white">
+  <section ws-template="BuzzRight" class="hero is-white ${Class}">
     <div class="hero-body">
       <div class="container">
         <div class="columns is-desktop is-vcentered-tablet is-variable is-8">
@@ -264,20 +266,16 @@
               </div>
             </div>
           </div>
-          <div class="column home-splash is-narrow has-text-centered">
-            <img alt="${ScreenshotAlt}" data-src="${ScreenshotUrl}">
-          </div>
+          <div class="column home-splash has-text-centered ${ScreenshotColumnClass}" ws-hole="Screenshot"></div>
         </div>
       </div>
     </div>
   </section>
-  <section ws-template="BuzzLeft" class="hero is-light">
+  <section ws-template="BuzzLeft" class="hero is-light ${Class}">
     <div class="hero-body">
       <div class="container">
         <div class="columns is-desktop is-vcentered-tablet is-variable is-8 is-reversed-tablet">
-          <div class="column home-splash is-narrow has-text-centered">
-            <img data-src="${ScreenshotUrl}" alt="${ScreenshotAlt}">
-          </div>
+          <div class="column home-splash has-text-centered ${ScreenshotColumnClass}" ws-hole="Screenshot"></div>
           <div class="column has-text-left-desktop has-text-centered">
             <h1 class="title is-spaced" ws-hole="Title"></h1>
             <p ws-replace="Text"></p>
