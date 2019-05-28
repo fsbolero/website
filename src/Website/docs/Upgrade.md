@@ -5,6 +5,8 @@ subtitle: How to update a project for newer releases
 
 ### From v0.4 to v0.5
 
+![Blazor 3.0](../img/blazor-icon.png)
+
 Bolero 0.5 doesn't bring any breaking API changes.
 However, it upgrades the dependency on Blazor from 0.7 to 3.0-preview5; and by doing so, it also upgrades the dependency on .NET Core from 2.1 to 3.0-preview5.
 This brings a number of necessary changes to projects. Here are the necessary steps:
@@ -41,3 +43,5 @@ There are also a few code changes to apply:
 
 Your solution should now build and run successfully.
 If your code uses Blazor APIs directly, please check the Blazor [0.8](https://devblogs.microsoft.com/aspnet/blazor-0-8-0-experimental-release-now-available/), [0.9](https://devblogs.microsoft.com/aspnet/blazor-0-9-0-experimental-release-now-available/) and [3.0](https://devblogs.microsoft.com/aspnet/blazor-now-in-official-preview/) upgrade guides for more code changes you might need to make.
+
+If you are having any issues with this upgrade, don't hesitate to [post an issue on GitHub!](https://github.com/fsbolero/bolero/issues)
