@@ -131,9 +131,10 @@ module Site =
             failwithf "Doc missing from the sidebar: %s" doc.url
         res
 
-    let DocPage (docs: Docs.Docs) (doc: Docs.Page) =
+    let DocPage (docs: Docs.Docs) (pageName: string) (doc: Docs.Page) =
         MainTemplate.DocsBody()
             .Title(doc.title)
+            .GitHubUrl("https://github.com/fsbolero/website/tree/master/src/Website/docs/" + pageName + ".md")
             .Subtitle(Doc.Verbatim doc.subtitle)
             .Sidebar(DocSidebar docs doc)
             .Content(PlainHtml doc.content)
@@ -164,7 +165,7 @@ module Site =
             | BlogPage p ->
                 Jekyll.BlogPage ctx blogConfig (site, paginator) (SlugType.BlogPost p)
             | Docs p ->
-                DocPage docs docs.pages.[p]
+                DocPage docs p docs.pages.[p]
         )
 
 [<Sealed>]
