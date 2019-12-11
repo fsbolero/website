@@ -136,11 +136,11 @@ Here is how to implement a remote service without any dependencies.
 
         member this.Configure(app: IApplicationBuilder) =
             app.UseRemoting()
-                .UseBlazor<Client.Startup>()
+                .UseClientSideBlazorFiles<Client.Startup>()
             |> ignore
     ```
 
-    Note that `UseRemoting` (and any other middleware) must be called *before* `UseBlazor`, because `UseBlazor` unconditionally catches all requests.
+    Note that `UseRemoting` (and any other middleware) must be called *before* `UseClientSideBlazorFiles`, because `UseClientSideBlazorFiles` unconditionally catches all requests.
 
 #### Using dependency injection
 
