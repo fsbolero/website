@@ -3,7 +3,7 @@ source https://daily.websharper.com/nuget
 storage: none
 framework: netstandard2.0
 
-nuget bolero
+nuget bolero prerelease
 nuget FSharp.Core
 nuget BuildWebCompiler
 nuget Markdig

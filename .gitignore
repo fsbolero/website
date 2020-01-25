@@ -9,3 +9,4 @@ build/
 *.user
 /src/Website/css/all*.css
 /src/Website/js/
+paket-files/
