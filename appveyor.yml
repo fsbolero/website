@@ -1,6 +1,6 @@
-version: 0.3.{build}
+version: 0.11.{build}
 image:
-- Visual Studio 2017
+- Visual Studio 2019
 
 build:
   verbosity: minimal
@@ -14,7 +14,7 @@ init:
 
 install:
 - git submodule update --init --recursive --remote
-- ps: ./install.ps1 --buildOnly
+- ps: ./install.ps1
 
 build_script:
 - ps: dotnet build -c Release
