@@ -8,4 +8,4 @@ npm install
 popd
 
 # Install dotnet CLI tools
-dotnet restore
+dotnet tool restore
