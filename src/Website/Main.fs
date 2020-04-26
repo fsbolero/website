@@ -142,6 +142,7 @@ module Site =
                         .Subtitle(Doc.Verbatim doc.subtitle)
                         .Doc()
             )
+            .EditPageAttr(if doc.hideEditLink then attr.style "display: none" else Attr.Empty)
             .GitHubUrl("https://github.com/fsbolero/website/tree/master/src/Website/docs/" + pageName + ".md")
             .Sidebar(DocSidebar docs doc)
             .Content(PlainHtml doc.content)
