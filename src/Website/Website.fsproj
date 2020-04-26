@@ -28,6 +28,11 @@
     <Content Include="Properties/launchSettings.json" />
   </ItemGroup>
   <ItemGroup>
+    <Watch Include="@(Content)" />
+    <Watch Include="@(None)" />
+    <Watch Remove="css/**/*.*" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Client\Client.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
