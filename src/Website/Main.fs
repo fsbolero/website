@@ -133,9 +133,16 @@ module Site =
 
     let DocPage (docs: Docs.Docs) (pageName: string) (doc: Docs.Page) =
         MainTemplate.DocsBody()
-            .Title(doc.title)
+            .Title(
+                if doc.hideTitle then
+                    Doc.Empty
+                else
+                    MainTemplate.DocsTitle()
+                        .Title(doc.title)
+                        .Subtitle(Doc.Verbatim doc.subtitle)
+                        .Doc()
+            )
             .GitHubUrl("https://github.com/fsbolero/website/tree/master/src/Website/docs/" + pageName + ".md")
-            .Subtitle(Doc.Verbatim doc.subtitle)
             .Sidebar(DocSidebar docs doc)
             .Content(PlainHtml doc.content)
             .Doc()

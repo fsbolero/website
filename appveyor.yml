@@ -19,9 +19,10 @@ install:
 build_script:
 - ps: dotnet build -c Release
 - ps: dotnet paket update -g refdoc
+- ps: cp build/docs/reference.html src/Website/docs/reference/template.cshtml
 - ps: dotnet fsformatting metadataformat
         --generate --outdir "$(mkdir -force build/docs/reference)"
-        --layoutRoots src/Website/docs/reference src/Website/docs/reference/reference
+        --layoutRoots src/Website/docs/reference packages/fsformatting/FSharp.Formatting/templates/reference
         --sourceRepo https://github.com/fsbolero/bolero
         --sourceFolder .
         --parameters
