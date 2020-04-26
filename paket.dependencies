@@ -13,3 +13,13 @@ nuget WebSharper.HighlightJs
 nuget WebSharper.UI
 nuget DotLiquid
 nuget YamlDotNet
+
+group refdoc
+source https://api.nuget.org/v3/index.json
+source https://daily.websharper.com/nuget
+storage: packages
+framework: netstandard2.0, netstandard2.1, netcoreapp3.1
+
+nuget FSharp.Formatting prerelease
+nuget Bolero prerelease
+nuget Bolero.Server prerelease

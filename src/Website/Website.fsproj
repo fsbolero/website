@@ -18,6 +18,7 @@
     <Content Include="videos/**/*.*" />
     <Content Remove="bin/**/*.*" />
     <Content Include="docs/**/*.*" />
+    <None Include="reference/**/*.*" />
     <Content Include=".nojekyll" />
     <None Include="extra.files" />
     <None Include="compilerconfig.json" />
