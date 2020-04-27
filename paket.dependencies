@@ -29,3 +29,4 @@ framework: netstandard2.0, netstandard2.1, netcoreapp3.1
 
 nuget Bolero prerelease
 nuget Bolero.Server prerelease
+nuget Microsoft.AspNetCore.Http.Abstractions

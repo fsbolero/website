@@ -31,6 +31,9 @@ dotnet fsformatting metadataformat `
     root "/docs" `
   --libDirs `
     packages/refdoc/Elmish/lib/netstandard2.0 `
+    packages/refdoc/Microsoft.AspNetCore.Authorization/lib/netstandard2.0 `
+    packages/refdoc/Microsoft.AspNetCore.Http.Abstractions/lib/netstandard2.0 `
+    packages/refdoc/Microsoft.AspNetCore.Metadata/lib/netstandard2.0 `
     packages/refdoc/Microsoft.AspNetCore.Components/lib/netstandard2.0 `
     packages/refdoc/Microsoft.AspNetCore.Components.Web/lib/netstandard2.0 `
     packages/refdoc/Microsoft.AspNetCore.Components.WebAssembly/lib/netstandard2.1 `
