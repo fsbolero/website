@@ -1,4 +1,21 @@
+param(
+    [string]$BoleroSlnFolder = $null,
+    [string]$BoleroSlnConfiguration = 'Debug'
+)
+
 cp build/docs/reference.html build/docs/template.cshtml
+
+$dlls = if ($BoleroSlnFolder -eq $null) {
+    @(
+        "packages/refdoc/Bolero/lib/netstandard2.1/Bolero.dll",
+        "packages/refdoc/Bolero.Server/lib/netstandard2.1/Bolero.Server.dll"
+    )
+} else {
+    @(
+        "$BoleroSlnFolder/src/Bolero/bin/$BoleroSlnConfiguration/netstandard2.1/Bolero.dll",
+        "$BoleroSlnFolder/src/Bolero.Server/bin/$BoleroSlnConfiguration/netcoreapp3.1/Bolero.Server.dll"
+    )
+}
 
 dotnet fsformatting metadataformat `
   --generate --outdir "$(mkdir -force build/docs/reference)" `
@@ -22,5 +39,4 @@ dotnet fsformatting metadataformat `
     packages/refdoc/Microsoft.JSInterop/lib/netstandard2.0 `
     packages/refdoc/NETStandard.Library/build/netstandard2.0/ref `
   --dllfiles `
-    packages/refdoc/Bolero/lib/netstandard2.1/Bolero.dll `
-    packages/refdoc/Bolero.Server/lib/netstandard2.1/Bolero.Server.dll `
+    $dlls
