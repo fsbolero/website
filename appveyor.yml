@@ -14,7 +14,7 @@ init:
 
 install:
 - git submodule update --init --recursive --remote
-- ps: ./install.ps1
+- ps: ./tools/install.ps1
 
 build_script:
 - ps: dotnet build -c Release

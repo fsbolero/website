@@ -1,14 +1,19 @@
 param(
-    [string]$BoleroSlnFolder = $null,
+    [string]$BoleroSlnFolder = '',
     [string]$BoleroSlnConfiguration = 'Debug'
 )
 
-cp build/docs/reference.html build/docs/template.cshtml
+$root = "$PSScriptRoot/.."
 
-$dlls = if ($BoleroSlnFolder -eq $null) {
+if (test-path "$root/build/docs/reference.html") {
+    cp "$root/build/docs/reference.html" "$root/build/docs/template.cshtml"
+    rm "$root/build/docs/reference.html"
+}
+
+$dlls = if ($BoleroSlnFolder -eq '') {
     @(
-        "packages/refdoc/Bolero/lib/netstandard2.1/Bolero.dll",
-        "packages/refdoc/Bolero.Server/lib/netstandard2.1/Bolero.Server.dll"
+        "$root/packages/refdoc/Bolero/lib/netstandard2.1/Bolero.dll",
+        "$root/packages/refdoc/Bolero.Server/lib/netcoreapp3.1/Bolero.Server.dll"
     )
 } else {
     @(
@@ -19,7 +24,7 @@ $dlls = if ($BoleroSlnFolder -eq $null) {
 
 dotnet fsformatting metadataformat `
   --generate --outdir "$(mkdir -force build/docs/reference)" `
-  --layoutRoots build/docs packages/fsformatting/FSharp.Formatting/templates/reference `
+  --layoutRoots build/docs "$root/packages/fsformatting/FSharp.Formatting/templates/reference" `
   --sourceRepo https://github.com/fsbolero/bolero `
   --sourceFolder . `
   --parameters `
@@ -30,16 +35,16 @@ dotnet fsformatting metadataformat `
     project-nuget "https://nuget.org/packages/Bolero" `
     root "/docs" `
   --libDirs `
-    packages/refdoc/Elmish/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.AspNetCore.Authorization/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.AspNetCore.Http.Abstractions/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.AspNetCore.Metadata/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.AspNetCore.Components/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.AspNetCore.Components.Web/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.AspNetCore.Components.WebAssembly/lib/netstandard2.1 `
-    packages/refdoc/Microsoft.AspNetCore.Components.Forms/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.Extensions.DependencyInjection.Abstractions/lib/netstandard2.0 `
-    packages/refdoc/Microsoft.JSInterop/lib/netstandard2.0 `
-    packages/refdoc/NETStandard.Library/build/netstandard2.0/ref `
+    "$root/packages/refdoc/Elmish/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Authorization/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Http.Abstractions/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Metadata/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Web/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components.WebAssembly/lib/netstandard2.1" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Forms/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.Extensions.DependencyInjection.Abstractions/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.JSInterop/lib/netstandard2.0" `
+    "$root/packages/refdoc/NETStandard.Library/build/netstandard2.0/ref" `
   --dllfiles `
     $dlls
