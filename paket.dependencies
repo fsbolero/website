@@ -1,5 +1,4 @@
 source https://api.nuget.org/v3/index.json
-source https://daily.websharper.com/nuget
 storage: none
 framework: netstandard2.0
 
@@ -23,7 +22,7 @@ nuget FSharp.Formatting prerelease
 
 group refdoc
 source https://api.nuget.org/v3/index.json
-source https://daily.websharper.com/nuget
+source https://ci.appveyor.com/nuget/bolero
 storage: packages
 framework: netstandard2.0, netstandard2.1, netcoreapp3.1
 
