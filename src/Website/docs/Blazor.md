@@ -1,7 +1,119 @@
 ---
 title: Using Blazor features
-subtitle: ""
+subtitle: Blazor Components and their interoperability
 ---
+
+### Components
+
+#### Creating a component
+
+> Note: this section describes how to create and use plain Blazor components. It is recommended to use Elmish components whenever possible; see [Using Elmish](Elmish).
+
+You can create plain Blazor components by inheriting from the `Component` type.
+
+```fsharp
+type MyComponent() =
+    inherit Component()
+
+    override this.Render() =
+        div [] [text "Hello, world!"]
+```
+
+To add parameters to the component, use a property with the `Parameter` attribute from namespace `Microsoft.AspNetCore.Blazor`.
+
+```fsharp
+type MyComponent() =
+    inherit Component()
+
+    [<Parameter>]
+    member val Who = "" with get, set
+
+    override this.Render() =
+        div [] [text (sprintf "Hello, %s!" this.Who)]
+```
+
+#### Using a component
+
+This section documents how to use a Blazor Component, either referenced from a C# Razor project, or created in F# by inheriting from `Component`.
+
+To instantiate a Blazor component, use the `comp` function. It is parameterized by the component type, and takes attributes and child nodes as arguments.
+To set a parameter, pass it by name as an attribute using the `=>` operator.
+
+```fsharp
+let myElement =
+    comp<MyComponent> ["Who" => "world"] []
+```
+
+However, some parameter types must be handled specially:
+
+* Parameters of type `EventCallback<T>` can be passed using one of these functions:
+
+    * `attr.callback`, which takes a function `T -> unit`;
+    * `attr.async.callback`, which takes a function `T -> Async<unit>`;
+    * `attr.task.callback`, which takes a function `T -> Task`.
+    
+    Here is an example using the library [MatBlazor](https://www.matblazor.com/):
+    
+    ```fsharp
+    open MatBlazor
+    
+    let myButton model dispatch =
+        comp<MatButton>
+          [ attr.callback "OnClick" (fun _ -> dispatch ButtonClicked) ]
+          [ text "Click me!" ]
+    ```
+    
+    In Blazor, these parameters would be passed as `Action<T>`.
+
+* Parameters of type `RenderFragment` and `RenderFragment<T>` can be passed using the function `attr.fragment` and `attr.fragmentWith`, respectively. The former takes a `Node`, and the latter a function `T -> Node`.
+
+    Here is again an example using MatBlazor:
+    
+    ```fsharp
+    open MatBlazor
+    
+    type Car =
+      { Name: string
+        Price: decimal
+        Horsepower: int }
+        
+    type Model =
+      { Cars: Car[] }
+    
+    let myTable model dispatch =
+        comp<MatTable>
+          [ "Items" => model.Cars
+
+            attr.fragment "MatTableHeader" (
+              concat
+                [ th [] [ text "Name" ]
+                  th [] [ text "Price" ]
+                  th [] [ text "Horsepower"]
+                ]
+            )
+
+            attr.fragmentWith "MatTableRow" (fun (car: Car) ->
+              concat
+                [ td [] [ text car.Name ]
+                  td [] [ textf "%.2f" car.Price ]
+                  td [] [ textf "%i" car.Horsepower ]
+                ]
+            )
+          ]
+          []
+    ```
+
+### NavLink
+
+The function `navLink` is a helper to create a Blazor `NavLink` component. This component creates an `<a>` tag which dynamically receives the `"active"` CSS class whenever the current page URL matches its own `href`. The match is customized by passing `NavLinkMatch.All` (to only match the full URL path) or `NavLinkMatch.Prefix` (to match any URL that starts with the `navLink`'s `href`).
+
+```fsharp
+let myMenu =
+    ul [] [
+        li [] [navLink NavLinkMatch.All [attr.href "/"] [text "Home"]]
+        li [] [navLink NavLinkMatch.Prefix [attr.href "/blog"] [text "Blog"]]
+    ]
+```
 
 This page documents some useful features of Blazor and how to best use them from a Bolero application.
 
