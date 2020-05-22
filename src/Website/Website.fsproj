@@ -30,6 +30,7 @@
   <ItemGroup>
     <Watch Include="@(Content)" />
     <Watch Include="@(None)" />
+    <Watch Remove="js/**/*.*" />
     <Watch Remove="css/**/*.*" />
   </ItemGroup>
   <ItemGroup>

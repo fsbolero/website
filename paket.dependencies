@@ -1,5 +1,4 @@
 source https://api.nuget.org/v3/index.json
-source https://daily.websharper.com/nuget
 storage: none
 framework: netstandard2.0
 
@@ -13,3 +12,20 @@ nuget WebSharper.HighlightJs
 nuget WebSharper.UI
 nuget DotLiquid
 nuget YamlDotNet
+
+group fsformatting
+source https://api.nuget.org/v3/index.json
+storage: packages
+framework: netstandard2.0
+
+nuget FSharp.Formatting prerelease
+
+group refdoc
+source https://api.nuget.org/v3/index.json
+source https://ci.appveyor.com/nuget/bolero
+storage: packages
+framework: netstandard2.0, netstandard2.1, netcoreapp3.1
+
+nuget Bolero prerelease
+nuget Bolero.Server prerelease
+nuget Microsoft.AspNetCore.Http.Abstractions
