@@ -10,3 +10,5 @@ build/
 /src/Website/css/all*.css
 /src/Website/js/
 paket-files/
+packages/
+src/Website/docs/reference/

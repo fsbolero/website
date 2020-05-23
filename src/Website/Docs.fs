@@ -19,6 +19,8 @@ type [<CLIMutable>] Page =
         url: string
         content: string
         headers: SidebarItem[]
+        hideTitle: bool
+        hideEditLink: bool
     }
 
 type Docs =

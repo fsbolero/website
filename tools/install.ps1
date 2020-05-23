@@ -1,11 +1,7 @@
-param(
-    [switch] $buildOnly
-)
-
 # Install nuget packages
 pushd src/Website
-npm install
-popd
+try { npm install }
+finally { popd }
 
 # Install dotnet CLI tools
 dotnet tool restore

@@ -14,10 +14,12 @@ init:
 
 install:
 - git submodule update --init --recursive --remote
-- ps: ./install.ps1
+- ps: ./tools/install.ps1
 
 build_script:
 - ps: dotnet build -c Release
+- ps: dotnet paket update -g refdoc
+- ps: ./tools/gen-refdoc.ps1
 
 environment:
   GH_TOKEN:
