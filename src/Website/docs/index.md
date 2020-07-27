@@ -66,4 +66,6 @@ The solution you just created comprises two projects.
 
 * `src/HelloWorld.Server` is an ASP.NET Core application that serves as the host. This project is optional: if you pass `--server=false` when creating the solution with `dotnet new`, then it will not be created. Note however that it is necessary for [templating hot reloading](Templating#hot-reloading) and [remoting](Remoting).
 
+    * `Pages/_Host.cshtml` is the page served in place of `index.html` when running the server application.
+
     * `Startup.fs`, similarly to its client counterpart, sets up ASP.NET Core to get the server started.
