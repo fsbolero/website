@@ -230,8 +230,8 @@ type MyApp() =
 #### In Elmish update commands
 
 It is common to need JavaScript interoperation in the `update` function to call external functionality. The `IJSRuntime` can be passed to it from the `ProgramComponent`.
-Inside `update`, the commands `Cmd.ofJS` and `Cmd.performJS` do a JavaScript call and transform its return value into a message.
-`ofJS` also transforms potential exceptions into a message, whereas `performJS` ignores such exceptions.
+Inside `update`, the commands located in the module `Cmd.OfJS` do a JavaScript call and transform its return value into a message.
+Just like standard Elmish commands, `Cmd.OfJS.either` also transforms potential exceptions into a message, whereas `Cmd.OfJS.perform` ignores such exceptions.
 
 ```fsharp
 open Microsoft.JSInterop
@@ -244,7 +244,7 @@ type Message =
 let update (js: IJSRuntime) message model =
     match message with
     | CallMyJSFunc data ->
-        let cmd = Cmd.ofJS js "MyJsLib.myJSFunc" [| data |] CalledMyJSFunc Error
+        let cmd = Cmd.OfJS.either js "MyJsLib.myJSFunc" [| data |] CalledMyJSFunc Error
         model, cmd
     // ...
 
@@ -256,12 +256,12 @@ type MyApp() =
         Program.mkProgram init update view
 ```
 
-These functions really are simple wrappers around `Cmd.ofTask`/`Cmd.performTask`.
+These functions really are simple wrappers around `Cmd.OfTask.either`/`perform`.
 For example, the above call is equivalent to:
 
 ```fsharp
 let cmd =
-    Cmd.ofTask
+    Cmd.OfTask.either
         (fun args -> js.InvokeAsync("MyJsLib.myJSFunc", args).AsTask())
         [| data |] CalledMyJSFunc Error
 ```
@@ -333,12 +333,12 @@ let update (jsRuntime:IJSRuntime) message model =
 [Blazor's type `ElementReference`](https://docs.microsoft.com/en-us/aspnet/core/blazor/call-javascript-from-dotnet?view=aspnetcore-3.1#capture-references-to-elements) allows passing a reference to a rendered HTML element to JavaScript.
 This is useful for interacting with JavaScript libraries that insert themselves in a given element, creating for example a map or a rich text editor; or libraries that interact with more fundamental JavaScript APIs, like focusing an element.
 
-In Bolero, the type `ElementReferenceBinder` is a small utility that makes working with `ElementReference` from F# simple.
+In Bolero, the type `HtmlRef` is a small utility that makes working with `ElementReference` from F# simple.
 
 1. The element to bind must be inside a Component class.
-2. Create an `ElementReferenceBinder` as a field of this class.
-3. To bind it to an element, pass it to the attribute `attr.bindRef` of this element.
-4. To use it, use its `.Ref` property.
+2. Create an `HtmlRef` as a field of this class.
+3. To bind it to an element, pass it to the attribute `attr.bind` of this element.
+4. To use it, use its `.Value` property.
 
 For example, given this small JavaScript function that can focus a DOM element it receives as argument:
 
@@ -356,7 +356,7 @@ This function can be called as follows from a Bolero component:
 type MyInputWithFocusButton() = // (1)
     inherit ElmishComponent<string, string>()
 
-    let inputRef = ElementReferenceBinder() // (2)
+    let inputRef = HtmlRef() // (2)
 
     [<Inject>]
     member val JSRuntime = Unchecked.defaultof<IJSRuntime> with get, set
@@ -364,15 +364,53 @@ type MyInputWithFocusButton() = // (1)
     override this.View model dispatch =
         concat [
             input [
-                attr.bindRef inputRef // (3)
+                attr.bind inputRef // (3)
                 bind.input.string model dispatch
             ]
             button [
                 on.task.click (fun _ ->
-                    this.JSRuntime.InvokeVoidAsync("MyJsLib.focus", inputRef.Ref) // (4)
+                    this.JSRuntime.InvokeVoidAsync("MyJsLib.focus", inputRef.Value) // (4)
                 )
             ] [
                 text "Focus this input box"
+            ]
+        ]
+```
+
+### Blazor component references
+
+Just like with HTML elements, it is possible to capture a reference to an instantiated Blazor component.
+Whereas HTML element references are mostly useful with JavaScript interop, Blazor component references are used directly in F# to eg. call methods on the component itself.
+
+Capturing a Blazor component reference is done exactly the same way as capturing an HTML element reference, except that the reference type is `Ref<Component>` instead of `HtmlRef`, where `Component` is the component type.
+For example, given the following component:
+
+```fsharp
+type MyComponent() =
+    inherit Component()
+    
+    override this.Render() =
+        div [] [text "This is my component"]
+        
+    member this.Refresh() =
+        Console.WriteLine("Refreshing this component!")
+```
+
+you can get a reference to an instance of it as follows:
+
+```fsharp
+type MyApplication() =
+    inherit Component()
+    
+    let myComponentRef = Ref<MyComponent>()
+    
+    override this.Render() =
+        div [] [
+            comp<MyComponent> [attr.ref myComponentRef] []
+            button [
+                on.click (fun _ -> myComponentRef.Value.Refresh())
+            ] [
+                text "Refresh my component!"
             ]
         ]
 ```
