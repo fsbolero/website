@@ -1,5 +1,10 @@
-# Bolero website
+# Bolero
 
-This is the source for the website [fsbolero.io](https://fsbolero.io).
+This is the Source for the Website
 
-It also contains the Bolero documentation, under [src/Website/docs](src/Website/docs).
+[fsbolero.io](https://fsbolero.io).
+
+It also contains the Bolero documentation,
+under   [src/Website/docs](src/Website/docs).
+
+Contributors
