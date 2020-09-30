@@ -1,4 +1,4 @@
-# Bolero website
+# Bolero website - Amazing 
 
 This is the source for the website [fsbolero.io](https://fsbolero.io).
 
