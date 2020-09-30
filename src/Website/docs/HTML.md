@@ -9,7 +9,7 @@ See also how to create HTML elements using [HTML templates](Templating).
 
 ### Elements
 
-To create an HTML element, just call the function with its name. It takes two arguments: a list of attributes and a list of child elements, and returns a value of type `Node`.
+To create an HTML elements, just call the function with its name. It takes two arguments: a list of attributes and a list of child elements, and returns a value of type `Node`.
 
 Additionally, the function `text` creates a text node, and `textf` creates a text node using `printf`-style formatting.
 
