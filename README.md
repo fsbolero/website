@@ -1,4 +1,4 @@
-# Bolero website
+#  Tututial website for beginners for geeting an amazing projects Bolero website
 
 This is the source for the website [fsbolero.io](https://fsbolero.io).
 
