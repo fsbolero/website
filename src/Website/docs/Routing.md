@@ -19,7 +19,7 @@ If the root of your application is a subpath, then you need to set that subpath 
 
 ### Inferred router
 
-The easiest way to create a router is by using an inferred router. In this mode of operation, you create an endpoint type which has a 1-to-1 correspondance with your supported URLs, and store it in the Elmish model.
+The easiest way to create a router is by using an inferred router. In this mode of operation, you create an endpoint type which has a 1-to-1 correspondence with your supported URLs, and store it in the Elmish model.
 
 Here are the steps to set up an inferred router:
 
