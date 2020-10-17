@@ -28,7 +28,7 @@ Here are the steps to set up an inferred router:
     ```fsharp
     type Page =
         | Home                                  // -> /Home
-        | BlogArticle of id: int                // -> /BlogEntry/42
+        | BlogArticle of id: int                // -> /BlogArticle/42
         | BlogList of user: string * page: int  // -> /BlogList/tarmil/1
     ```
     
@@ -101,7 +101,7 @@ The router has a few helpful utilities:
     ```fsharp
     type Page =
         | Home                                  // -> /Home
-        | BlogArticle of id: int                // -> /BlogEntry/42
+        | BlogArticle of id: int                // -> /BlogArticle/42
         | BlogList of user: string * page: int  // -> /BlogList/tarmil/1
     ```
 
@@ -123,8 +123,8 @@ The router has a few helpful utilities:
     type Page =
         | [<EndPoint "/list/{user}/tagged/{*tags}">]
           ListTagged of user: string * tags: list<string>
-          
-    Tagged("tarmil", ["bolero"; "webassembly"])
+
+    ListTagged("tarmil", ["bolero"; "webassembly"])
     // -> /list/tarmil/tagged/bolero/webassembly
     ```
     
