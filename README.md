@@ -17,7 +17,7 @@ It also contains the Bolero documentation, under [src/Website/docs](src/Website/
     This command uses the version of Bolero installed in the paket group `refdoc`.
     Use `dotnet paket update -g refdoc` to update it.
 
-    To use the compilation artifacts of a local copy of the Bolero project instead, use these arguments:
+    To use the compilation artifacts of a local copy of [the Bolero project](https://github.com/fsbolero/Bolero) instead, use these arguments:
 
     ```
     ./tools/gen-refdoc.ps1 -BoleroSlnFolder ../bolero -BoleroSlnConfiguration Debug
