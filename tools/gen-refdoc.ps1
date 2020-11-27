@@ -13,11 +13,13 @@ if (test-path "$root/build/docs/reference.html") {
 $dlls = if ($BoleroSlnFolder -eq '') {
     @(
         "$root/packages/refdoc/Bolero/lib/net5.0/Bolero.dll",
+        "$root/packages/refdoc/Bolero/lib/net5.0/Bolero.Html.dll",
         "$root/packages/refdoc/Bolero.Server/lib/net5.0/Bolero.Server.dll"
     )
 } else {
     @(
         "$BoleroSlnFolder/src/Bolero/bin/$BoleroSlnConfiguration/net5.0/Bolero.dll",
+        "$BoleroSlnFolder/src/Bolero.Html/bin/$BoleroSlnConfiguration/net5.0/Bolero.Html.dll",
         "$BoleroSlnFolder/src/Bolero.Server/bin/$BoleroSlnConfiguration/net5.0/Bolero.Server.dll"
     )
 }
