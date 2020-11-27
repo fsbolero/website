@@ -12,13 +12,13 @@ if (test-path "$root/build/docs/reference.html") {
 
 $dlls = if ($BoleroSlnFolder -eq '') {
     @(
-        "$root/packages/refdoc/Bolero/lib/netstandard2.1/Bolero.dll",
-        "$root/packages/refdoc/Bolero.Server/lib/netcoreapp3.1/Bolero.Server.dll"
+        "$root/packages/refdoc/Bolero/lib/net5.0/Bolero.dll",
+        "$root/packages/refdoc/Bolero.Server/lib/net5.0/Bolero.Server.dll"
     )
 } else {
     @(
-        "$BoleroSlnFolder/src/Bolero/bin/$BoleroSlnConfiguration/netstandard2.1/Bolero.dll",
-        "$BoleroSlnFolder/src/Bolero.Server/bin/$BoleroSlnConfiguration/netcoreapp3.1/Bolero.Server.dll"
+        "$BoleroSlnFolder/src/Bolero/bin/$BoleroSlnConfiguration/net5.0/Bolero.dll",
+        "$BoleroSlnFolder/src/Bolero.Server/bin/$BoleroSlnConfiguration/net5.0/Bolero.Server.dll"
     )
 }
 
@@ -36,15 +36,15 @@ dotnet fsformatting metadataformat `
     root "/docs" `
   --libDirs `
     "$root/packages/refdoc/Elmish/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Authorization/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Authorization/lib/net5.0" `
     "$root/packages/refdoc/Microsoft.AspNetCore.Http.Abstractions/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Metadata/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Web/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components.WebAssembly/lib/netstandard2.1" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Forms/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Metadata/lib/net5.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components/lib/net5.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Web/lib/net5.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components.WebAssembly/lib/net5.0" `
+    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Forms/lib/net5.0" `
     "$root/packages/refdoc/Microsoft.Extensions.DependencyInjection.Abstractions/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.JSInterop/lib/netstandard2.0" `
+    "$root/packages/refdoc/Microsoft.JSInterop/lib/net5.0" `
     "$root/packages/refdoc/NETStandard.Library/build/netstandard2.0/ref" `
   --dllfiles `
     $dlls
