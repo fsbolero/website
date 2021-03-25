@@ -1,6 +1,6 @@
 ---
 title: Dealing with JSON
-subtitle: Use the inbuilt extensions to [System.Text.Json](https://github.com/Tarmil/FSharp.SystemTextJson) for handling F# union and records
+subtitle: Use the inbuilt [extensions](https://github.com/Tarmil/FSharp.SystemTextJson) to System.Text.Json for handling F# specific types
 ---
 
 > Bolero uses [System.Text.Json](https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-overview) and [FSharp.SystemTextJson](https://github.com/Tarmil/FSharp.SystemTextJson) for JSON handling. You are free to use any other JSON library of your choosing if you so wish.
@@ -71,4 +71,4 @@ JsonSerializer.Deserialize<{| x : string ; y : string |}>("""{"x":"Hello","y":"W
 ```
 
 ### More info
-For Unions, Tuples, Options, Maps, Lists & Sets, more information is on the [FSharp.SystemTextJson](https://github.com/Tarmil/FSharp.SystemTextJson) project site. 
+For examples using standard library types such as unions, tuples, `option`, `Map`, `list` & `Set`, more information is on the [FSharp.SystemTextJson](https://github.com/Tarmil/FSharp.SystemTextJson) project site. 
