@@ -218,7 +218,7 @@ Bolero provides the type `IBoleroHostConfig` and a few extension methods on Razo
 
 Here is an example page using all of the above:
 
-```html
+```razor
 @page "/"
 @namespace MyApp.Server
 @using Bolero.Server
