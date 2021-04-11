@@ -144,11 +144,16 @@ A few additional functions are available in the module `Bolero.Server.Html`:
 
     In WebAssembly mode, this must be inserted inside a container element matched by the selector used in `Startup.fs`.
 
+    In WebAssembly mode without prerendering, this actually doesn't insert any content.
+    Indeed, in this mode, all that is needed is the container element and the `boleroScript` (see below).
+    So if you know that you will always run your app in WebAssembly mode without prerendering, then you can simply not insert the `rootComp`.
+    This way, you won't need a reference from the server project to the client project.
+
     Note that this is the only way to insert dynamic content in a static page.
     If you use functions like `comp` or `ecomp`, the component's initial HTML will be inserted in the page, but no dynamic behavior will take place.
 
 * `boleroScript` inserts a `<script>` tag pointing to the JavaScript file that starts the application.
-    It knows which script to insert based on the `server` and `devToggle` values passed to `AddBoleroHost`.
+    It knows which script to insert (either `blazor.webassembly.js` or `blazor.server.js`) based on the `server` and `devToggle` values passed to `AddBoleroHost`.
 
 Here is an example page using all of the above:
 
