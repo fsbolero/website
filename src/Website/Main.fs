@@ -1,102 +1,26 @@
 module Website.Main
 
-open System
-open System.Collections.Generic
-open System.IO
 open WebSharper
 open WebSharper.Sitelets
 open WebSharper.UI
-open WebSharper.UI.Notation
 
 type EndPoint =
     | [<EndPoint "GET /">] Home
     | [<EndPoint "GET /docs"; Wildcard>] Docs of string
     | [<EndPoint "/blog">] BlogPage of slug: string
 
-type MainTemplate = Templating.Template<"index.html">
-
 module Site =
     open WebSharper.UI.Html
-    open WebSharper.UI.Server
     open Website.Blogs
-    open Website.Blogs.Jekyll
-
-    let Menu = [
-        "Home", "/"
-        "Documentation", "/docs"
-        //"Blog", "/blog"
-        "Try F#", "https://tryfsharp.fsbolero.io"
-    ]
-
-    let private head =
-        __SOURCE_DIRECTORY__ + "/js/Client.head.html"
-        |> File.ReadAllText
-        |> Doc.Verbatim
-
-    let Page (title: option<string>) hasBanner (docs: Docs.Docs) (body: Doc) =
-        MainTemplate()
-#if !DEBUG
-            .ReleaseMin(".min")
-#endif
-            .NavbarOverlay(if hasBanner then "overlay-bar" else "")
-            .Head(head)
-            .Title(
-                match title with
-                | None -> ""
-                | Some t -> t + " | "
-            )
-            .TopMenu(Menu |> List.map (function
-                | text, ("/docs" as url) ->
-                    let items = docs.sidebar |> Array.map (fun item ->
-                        MainTemplate.TopMenuDropdownItem()
-                            .Text(item.title)
-                            .Url(item.url)
-                            .Doc())
-                    MainTemplate.TopMenuItemWithDropdown()
-                        .Text(text)
-                        .Url(url)
-                        .DropdownItems(items)
-                        .Doc()
-                | text, url ->
-                    MainTemplate.TopMenuItem()
-                        .Text(text)
-                        .Url(url)
-                        .Doc()
-            ))
-            .DrawerMenu(Menu |> List.map (fun (text, url) ->
-                MainTemplate.DrawerMenuItem()
-                    .Text(text)
-                    .Url(url)
-                    .Children(
-                        match url with
-                        | "/docs" ->
-                            ul [] (docs.sidebar |> Array.map (fun item ->
-                                MainTemplate.DrawerMenuItem()
-                                    .Text(item.title)
-                                    .Url(item.url)
-                                    .Doc()
-                            ))
-                        | _ -> Doc.Empty
-                    )
-                    .Doc()
-            ))
-            .Body(body)
-            .FooterDocs(docs.sidebar |> Array.map (fun item ->
-                MainTemplate.FooterDoc()
-                    .Title(item.title)
-                    .Url(item.url)
-                    .Doc()
-            ))
-            .Doc()
-        |> Content.Page
 
     let HomePage docs =
-        MainTemplate.HomeBody()
+        Layout.MainTemplate.HomeBody()
             .Doc()
-        |> Page None true docs
+        |> Layout.Page None true docs
 
     let PlainHtml html =
         div [Attr.Create "ws-preserve" ""] [Doc.Verbatim html]
+
 
     let DocSidebar (docs: Docs.Docs) (doc: Docs.Page) =
         let mutable foundCurrent = false
@@ -104,7 +28,7 @@ module Site =
             docs.sidebar
             |> Array.map (fun item ->
                 let tpl =
-                    MainTemplate.DocsSidebarItem()
+                    Layout.MainTemplate.SidebarItem()
                         .Title(item.title)
                         .Url(item.url)
                 let tpl =
@@ -115,7 +39,7 @@ module Site =
                         let children =
                             doc.headers
                             |> Array.map (fun header ->
-                                MainTemplate.DocsSidebarSubItem()
+                                Layout.MainTemplate.SidebarSubItem()
                                     .Title(header.title)
                                     .Url(header.url)
                                     .Doc()
@@ -126,18 +50,17 @@ module Site =
                         tpl.SubItemsAttr(attr.``class`` "is-hidden")
                 tpl.Doc()
             )
-            |> Doc.Concat
         if not foundCurrent then
             failwithf "Doc missing from the sidebar: %s" doc.url
         res
 
     let DocPage (docs: Docs.Docs) (pageName: string) (doc: Docs.Page) =
-        MainTemplate.DocsBody()
+        Layout.MainTemplate.DocsBody()
             .Title(
                 if doc.hideTitle then
                     Doc.Empty
                 else
-                    MainTemplate.DocsTitle()
+                    Layout.MainTemplate.DocsTitle()
                         .Title(doc.title)
                         .Subtitle(Doc.Verbatim doc.subtitle)
                         .Doc()
@@ -147,47 +70,60 @@ module Site =
             .Sidebar(DocSidebar docs doc)
             .Content(PlainHtml doc.content)
             .Doc()
-        |> Page (Some doc.title) false docs
+        |> Layout.Page (Some doc.title) false docs
 
-    let blogConfig =
-        {
-            PostsFolder = "_posts"
-            LayoutsFolder = "_layouts"
-        }
+    let BlogSidebar (blogs: Blogs.Articles) (page: Blogs.Page) =
+        blogs.pages.Values
+        |> Seq.sortByDescending (fun a -> a.date)
+        |> Seq.map (fun a ->
+            let isCurrent = a.url = page.url
+            Layout.MainTemplate.SidebarItem()
+                .Title(a.title)
+                .Url(a.url)
+                .LinkAttr(if isCurrent then attr.``class`` "is-active" else Attr.Empty)
+                .SubItemsAttr(attr.``class`` "is-hidden")
+                .Doc())
 
-    let BlogPages() =
-        Runtime.Paginator.BuildPostList blogConfig
+    let BlogPage (blogs: Blogs.Articles) docs (page: Blogs.Page) =
+        Layout.MainTemplate.BlogsBody()
+            .Title(page.title)
+            .Subtitle(Doc.Verbatim page.subtitle)
+            .Sidebar(BlogSidebar blogs page)
+            .Content(PlainHtml page.content)
+            .Doc()
+        |> Layout.Page (Some page.title) false docs
 
-    let Main docs =
-        Application.MultiPage (fun ctx action ->
-            let site =
-                Path.Combine(__SOURCE_DIRECTORY__, "_config.yml")
-                |> File.ReadAllText
-                |> Yaml.OfYaml<Site>
-            printfn "site=%A" site
-            let paginator = Runtime.Paginator.Build(blogConfig, site)
-            printfn "paginator=%A" paginator
-            match action with
+    let Main docs blogs =
+        let (KeyValue(blogIndexSlug, _)) =
+            blogs.pages
+            |> Seq.maxBy (fun (KeyValue(_, v)) -> v.date)
+        let rec page ctx = function
             | Home ->
                 HomePage docs
+            | BlogPage "index" ->
+                blogIndexSlug
+                |> EndPoint.BlogPage
+                |> page ctx
             | BlogPage p ->
-                Jekyll.BlogPage ctx blogConfig (site, paginator) (SlugType.BlogPost p)
+                BlogPage blogs docs blogs.pages.[p]
             | Docs p ->
                 DocPage docs p docs.pages.[p]
-        )
+        Application.MultiPage page
 
 [<Sealed>]
 type Website() =
     let docs = Docs.Compute()
+    let blogs = Blogs.Compute()
 
     interface IWebsite<EndPoint> with
-        member this.Sitelet = Site.Main docs
+        member this.Sitelet = Site.Main docs blogs
         member this.Actions = [
             yield Home
             for p in docs.pages.Keys do
                 yield Docs p
-            for (path, filename, (y, m, d), slug, ext) in Site.BlogPages() do
-                yield BlogPage filename
+            yield BlogPage "index"
+            for p in blogs.pages.Keys do
+                yield BlogPage p
         ]
 
 [<assembly: Website(typeof<Website>)>]

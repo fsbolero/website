@@ -2,15 +2,14 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 
-nuget bolero prerelease
 nuget FSharp.Core
 nuget BuildWebCompiler
+nuget FSharp.Text.RegexProvider
 nuget Markdig
 nuget WebSharper
 nuget WebSharper.FSharp
 nuget WebSharper.HighlightJs
 nuget WebSharper.UI
-nuget DotLiquid
 nuget YamlDotNet
 
 group fsformatting

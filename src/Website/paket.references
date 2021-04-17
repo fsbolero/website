@@ -4,5 +4,5 @@ WebSharper.FSharp
 WebSharper.UI
 FSharp.Core
 Markdig
-DotLiquid
 YamlDotNet
+FSharp.Text.RegexProvider
