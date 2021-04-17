@@ -6,8 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="YamlHeader.fs" />
-    <Compile Include="Blogs.fs" />
     <Compile Include="Docs.fs" />
+    <Compile Include="Blogs.fs" />
+    <Compile Include="Layout.fs" />
     <Compile Include="Main.fs" />
     <Content Include="**/*.html" />
     <Content Include="img/**/*.*" />
@@ -18,6 +19,7 @@
     <Content Include="videos/**/*.*" />
     <Content Remove="bin/**/*.*" />
     <Content Include="docs/**/*.*" />
+    <Content Include="articles/**/*.*" />
     <Content Include=".nojekyll" />
     <None Include="extra.files" />
     <None Include="compilerconfig.json" />

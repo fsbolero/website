@@ -68,11 +68,11 @@ module private Impl =
     let parsePages() =
         Directory.GetFiles(baseDir, "*.md", SearchOption.AllDirectories)
         |> Array.map (fun fullPath ->
-            let path = fullPath.[baseDir.Length..].Replace('\\', '/').Trim('/')
-            eprintfn "Parsing %s" path
-            let path = path.[..path.Length - 4] // Trim .md
-            let url = if path = "index" then "/docs" else "/docs/" + path
-            path, { parseFile fullPath with url = url })
+            let filename = fullPath.[baseDir.Length..].Replace('\\', '/').Trim('/')
+            eprintfn "Parsing %s" filename
+            let name = Path.GetFileNameWithoutExtension(filename)
+            let url = if name = "index" then "/docs" else "/docs/" + name
+            name, { parseFile fullPath with url = url })
         |> dict
 
     let parseSidebar (pages: IDictionary<string, Page>) =

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -137,8 +137,52 @@
         <Screenshot><img alt="Defining and using a route" data-src="/img/routing.png"></Screenshot>
       </ws-BuzzRight>
     </div>
+    <section ws-template="PageWithSidebar" class="with-sidebar-background"><!-- no section class: it's on the columns instead -->
+      <div class="container">
+        <div class="columns is-gapless">
+          <div class="column ${MainColumnClass}" ws-hole="MainColumn"></div>
+          <div class="column is-one-quarter-tablet is-one-fifth-desktop sidebar-column">
+            <section class="section">
+              <div class="menu">
+                <div class="menu-label">${SidebarLabel}</div>
+                <ul class="menu-list" ws-hole="Sidebar">
+                  <li ws-template="SidebarItem">
+                    <a ws-attr="LinkAttr" href="${Url}">${Title}</a>
+                    <ul ws-attr="SubItemsAttr" ws-hole="Children">
+                      <li ws-template="SidebarSubItem">
+                        <a href="${Url}">${Title}</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
     <div ws-children-template="DocsBody">
-      <section class="with-sidebar-background"><!-- no section class: it's on the columns instead -->
+      <ws-PageWithSidebar Sidebar>
+        <MainColumnClass>content markdown-column</MainColumnClass>
+        <MainColumn>
+          <div class="edit-page-icon" ws-attr="EditPageAttr">
+            <a href="${GitHubUrl}" target="_blank" title="Contribute to this page on GitHub">
+              <i class="fa fa-edit"></i>
+            </a>
+          </div>
+          <section ws-replace="Title">
+            <section class="hero" ws-template="DocsTitle">
+              <div class="hero-body">
+                <h1 class="title">${Title}</h1>
+                <p class="subtitle" ws-replace="Subtitle"></p>
+              </div>
+            </section>
+          </section>
+          <section class="section" ws-hole="Content"></section>
+        </MainColumn>
+        <SidebarLabel>Documentation</SidebarLabel>
+      </ws-PageWithSidebar>
+      <!--<section class="with-sidebar-background">
         <div class="container">
           <div class="columns is-gapless">
             <div class="column content markdown-column">
@@ -177,7 +221,22 @@
             </div>
           </div>
         </div>
-      </section>
+      </section>-->
+    </div>
+    <div ws-children-template="BlogsBody">
+      <ws-PageWithSidebar Sidebar>
+        <MainColumnClass>content markdown-column</MainColumnClass>
+        <MainColumn>
+          <section class="hero">
+            <div class="hero-body">
+              <h1 class="title">${Title}</h1>
+              <p class="subtitle" ws-replace="Subtitle"></p>
+            </div>
+          </section>
+          <section class="section" ws-hole="Content"></section>
+        </MainColumn>
+        <SidebarLabel>Articles</SidebarLabel>
+      </ws-PageWithSidebar>
     </div>
   </div>
   <footer class="section footer first-footer has-text-centered">
