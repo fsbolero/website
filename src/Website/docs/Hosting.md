@@ -19,7 +19,7 @@ You can learn more about these hosting models in [the official Blazor documentat
 To create a plain WebAssembly application, use the [dotnet project template](index#creating-a-project) with the following arguments:
 
 ```sh
-dotnet new bolero-app --minimal --server=false
+dotnet new bolero-app --server=false
 ```
 
 In plain WebAssembly mode, the static content of the application is a simple `.html` file, and the dynamic Bolero content is rendered in a tag of this file.
@@ -36,12 +36,14 @@ This container is selected in `Startup.fs`:
 builder.RootComponents.Add<Main.MyApp>("#main")
 ```
 
+Note that prerendering is not possible in plain WebAssembly mode.
+
 #### Hosted WebAssembly mode
 
 Hosted WebAssembly is the default hosting mode created by the [dotnet project template](index#creating-a-project):
 
 ```sh
-dotnet new bolero-app --minimal
+dotnet new bolero-app
 ```
 
 In hosted WebAssembly mode, the static content of the application is rendered on the ASP.NET Core server side.
@@ -49,12 +51,14 @@ In hosted WebAssembly mode, the static content of the application is rendered on
 
 Like in plain WebAssembly mode, the static content must include a container element matching the selector used in `Startup.fs`.
 
+Unlike in plain WebAssembly mode, prerendering is possible based on the [configuration](#configuring-hosted-modes).
+
 #### Server-side mode
 
 To create a server-side Bolero app, create a default [dotnet project template](index#creating-a-project):
 
 ```sh
-dotnet new bolero-app --minimal
+dotnet new bolero-app
 ```
 
 and in `src/AppName.Server/Startup.fs`, replace the line:
