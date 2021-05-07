@@ -21,93 +21,93 @@ module Site =
     let PlainHtml html =
         div [Attr.Create "ws-preserve" ""] [Doc.Verbatim html]
 
+    module Docs =
+        let Sidebar (docs: Docs.Docs) (doc: Docs.Page) =
+            let mutable foundCurrent = false
+            let res =
+                docs.sidebar
+                |> Array.map (fun item ->
+                    let tpl =
+                        Layout.MainTemplate.SidebarItem()
+                            .Title(item.title)
+                            .Url(item.url)
+                    let tpl =
+                        if item.url = doc.url then
+                            if foundCurrent then
+                                failwithf "Doc present twice in the sidebar: %s" doc.url
+                            foundCurrent <- true
+                            let children =
+                                doc.headers
+                                |> Array.map (fun header ->
+                                    Layout.MainTemplate.SidebarSubItem()
+                                        .Title(header.title)
+                                        .Url(header.url)
+                                        .Doc()
+                                )
+                            tpl.Children(children)
+                                .LinkAttr(attr.``class`` "is-active")
+                        else
+                            tpl.SubItemsAttr(attr.``class`` "is-hidden")
+                    tpl.Doc()
+                )
+            if not foundCurrent then
+                failwithf "Doc missing from the sidebar: %s" doc.url
+            res
 
-    let DocSidebar (docs: Docs.Docs) (doc: Docs.Page) =
-        let mutable foundCurrent = false
-        let res =
-            docs.sidebar
-            |> Array.map (fun item ->
-                let tpl =
-                    Layout.MainTemplate.SidebarItem()
-                        .Title(item.title)
-                        .Url(item.url)
-                let tpl =
-                    if item.url = doc.url then
-                        if foundCurrent then
-                            failwithf "Doc present twice in the sidebar: %s" doc.url
-                        foundCurrent <- true
-                        let children =
-                            doc.headers
-                            |> Array.map (fun header ->
-                                Layout.MainTemplate.SidebarSubItem()
-                                    .Title(header.title)
-                                    .Url(header.url)
-                                    .Doc()
-                            )
-                        tpl.Children(children)
-                            .LinkAttr(attr.``class`` "is-active")
+        let Page (docs: Docs.Docs) (pageName: string) (doc: Docs.Page) =
+            Layout.MainTemplate.DocsBody()
+                .Title(
+                    if doc.hideTitle then
+                        Doc.Empty
                     else
-                        tpl.SubItemsAttr(attr.``class`` "is-hidden")
-                tpl.Doc()
-            )
-        if not foundCurrent then
-            failwithf "Doc missing from the sidebar: %s" doc.url
-        res
+                        Layout.MainTemplate.DocsTitle()
+                            .Title(doc.title)
+                            .Subtitle(Doc.Verbatim doc.subtitle)
+                            .Doc()
+                )
+                .EditPageAttr(if doc.hideEditLink then attr.style "display: none" else Attr.Empty)
+                .GitHubUrl("https://github.com/fsbolero/website/tree/master/src/Website/docs/" + pageName + ".md")
+                .Sidebar(Sidebar docs doc)
+                .Content(PlainHtml doc.content)
+                .Doc()
+            |> Layout.Page (Some doc.title) false docs
 
-    let DocPage (docs: Docs.Docs) (pageName: string) (doc: Docs.Page) =
-        Layout.MainTemplate.DocsBody()
-            .Title(
-                if doc.hideTitle then
-                    Doc.Empty
-                else
-                    Layout.MainTemplate.DocsTitle()
-                        .Title(doc.title)
-                        .Subtitle(Doc.Verbatim doc.subtitle)
-                        .Doc()
-            )
-            .EditPageAttr(if doc.hideEditLink then attr.style "display: none" else Attr.Empty)
-            .GitHubUrl("https://github.com/fsbolero/website/tree/master/src/Website/docs/" + pageName + ".md")
-            .Sidebar(DocSidebar docs doc)
-            .Content(PlainHtml doc.content)
-            .Doc()
-        |> Layout.Page (Some doc.title) false docs
+    module Blogs =
 
-    let BlogSidebar (blogs: Blogs.Articles) (page: Blogs.Page) =
-        blogs.pages.Values
-        |> Seq.sortByDescending (fun a -> a.date)
-        |> Seq.map (fun a ->
-            let isCurrent = a.url = page.url
-            Layout.MainTemplate.SidebarItem()
-                .Title(a.title)
-                .Url(a.url)
-                .LinkAttr(if isCurrent then attr.``class`` "is-active" else Attr.Empty)
-                .SubItemsAttr(attr.``class`` "is-hidden")
-                .Doc())
+        let Sidebar (blogs: Blogs.Articles) (page: Blogs.Page) =
+            blogs.pages.Values
+            |> Seq.sortByDescending (fun a -> a.date)
+            |> Seq.map (fun a ->
+                let isCurrent = a.url = page.url
+                Layout.MainTemplate.SidebarItem()
+                    .Title(a.title)
+                    .Url(a.url)
+                    .LinkAttr(if isCurrent then attr.``class`` "is-active" else Attr.Empty)
+                    .SubItemsAttr(attr.``class`` "is-hidden")
+                    .Doc())
 
-    let BlogPage (blogs: Blogs.Articles) docs (page: Blogs.Page) =
-        Layout.MainTemplate.BlogsBody()
-            .Title(page.title)
-            .Subtitle(Doc.Verbatim page.subtitle)
-            .Sidebar(BlogSidebar blogs page)
-            .Content(PlainHtml page.content)
-            .Doc()
-        |> Layout.Page (Some page.title) false docs
+        let Page (blogs: Blogs.Articles) docs (page: Blogs.Page) =
+            Layout.MainTemplate.BlogsBody()
+                .Title(page.title)
+                .Subtitle(Doc.Verbatim page.subtitle)
+                .Sidebar(Sidebar blogs page)
+                .Content(PlainHtml page.content)
+                .Doc()
+            |> Layout.Page (Some page.title) false docs
 
     let Main docs blogs =
-        let (KeyValue(blogIndexSlug, _)) =
-            blogs.pages
-            |> Seq.maxBy (fun (KeyValue(_, v)) -> v.date)
+        let blogIndex =
+            let kv = blogs.pages |> Seq.maxBy (fun kv -> kv.Value.date)
+            BlogPage kv.Key
         let rec page ctx = function
             | Home ->
                 HomePage docs
             | BlogPage "index" ->
-                blogIndexSlug
-                |> EndPoint.BlogPage
-                |> page ctx
+                page ctx blogIndex
             | BlogPage p ->
-                BlogPage blogs docs blogs.pages.[p]
+                Blogs.Page blogs docs blogs.pages.[p]
             | Docs p ->
-                DocPage docs p docs.pages.[p]
+                Docs.Page docs p docs.pages.[p]
         Application.MultiPage page
 
 [<Sealed>]
