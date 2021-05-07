@@ -136,6 +136,7 @@ There are multiple ways available to generate the static HTML content that conta
 > Introduced in v0.17.
 
 The recommended way to generate static content for Bolero is to use the same [HTML functions](HTML) that are used by dynamic content.
+It is the default method used by the dotnet project template, or can be explicitly used with `--hostpage=bolero`.
 
 A few additional functions are available in the module `Bolero.Server.Html`:
 
@@ -213,6 +214,7 @@ type MyController() =
 Another option is to use a Razor page.
 This is particularly convenient when integrating the application in an ASP.NET Core application written in C#.
 It can also be used with an F# application with [Razor runtime compilation](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-5.0&tabs=visual-studio#enable-runtime-compilation-in-an-existing-project); this was the mode used by the dotnet template until Bolero 0.16.
+Starting with 0.17, it can be used with `--hostpage=razor`.
 
 Bolero provides the type `IBoleroHostConfig` and a few extension methods on Razor's `Html` to help render components and Blazor JavaScript tags using the configuration from `AddBoleroHost`:
 
