@@ -266,6 +266,68 @@ let cmd =
         [| data |] CalledMyJSFunc Error
 ```
 
+#### Invoke instance method from JS
+First define some javascript. Notice the `onResize` will be provided to the JS environment, Blazor will create the machinery for us.
+
+```javascript
+window.generalFunctions = {
+    getSize: function(){
+      var size = { "height": window.innerHeight, "width" : window.innerWidth };
+      return size;
+    },
+    initResizeCallback: function(onResize) {
+      window.addEventListener('resize', (ev) => {         
+        this.resizeCallbackJS(onResize);
+      });
+    },
+    resizeCallbackJS: function(callback) {
+      var size = this.getSize();
+      callback.invokeMethodAsync('Invoke', size.height, size.width);
+    }
+  };
+```
+This should be loaded after the blazor WASM framework initialization.
+```html
+<script src="_framework/blazor.webassembly.js"></script>
+<script src="/js/windowResize.js"></script>
+```
+
+Use [DotNetObjectReference.Create()](https://docs.microsoft.com/en-us/aspnet/core/blazor/call-dotnet-from-javascript?view=aspnetcore-3.1#instance-method-call) to create a DotNet JS interop object, this is passed to the Javascript environment. A helper `Callback` type, which when decorated with `JSInvokable`, allows the blazor framework to correctly identify & call the instance method. Create a `Cmd.ofSub` subscription during initialization, where the Javascript is instructed to call the `Invoke()` method on the .NET object. With this mechanism, a `WindowResize` message will be dispatched within Bolero on each `window.resize` DOM event.
+
+```fsharp
+type Size(h:int, w:int) =
+    member this.Height with get() = h
+    member this.Width with get() = w
+    new() = Size(0,0)
+
+type Callback =
+    static member OfSize(f) =
+        DotNetObjectReference.Create(SizeCallback(f))
+
+and SizeCallback(f: Size -> unit) =
+    [<JSInvokable>]
+    member this.Invoke(arg1, arg2) =
+        f (Size(arg1, arg2))
+
+type Message =
+    | Initialize
+    | WindowResize of Size
+
+let update (jsRuntime:IJSRuntime) message model =
+    let setupJSCallback = 
+        Cmd.ofSub (fun dispatch -> 
+            // given a size, dispatch a message
+            let onResize = dispatch << WindowResize
+            jsRuntime.InvokeVoidAsync("generalFunctions.initResizeCallback", Callback.OfSize onResize).AsTask() |> ignore
+        )
+    
+    match message with
+    | Initialize -> model, setupJSCallback
+    | WindowResize size ->
+        // handle window resize message
+        model, Cmd.none
+```
+
 #### HTML element references
 
 [Blazor's type `ElementReference`](https://docs.microsoft.com/en-us/aspnet/core/blazor/call-javascript-from-dotnet?view=aspnetcore-3.1#capture-references-to-elements) allows passing a reference to a rendered HTML element to JavaScript.
