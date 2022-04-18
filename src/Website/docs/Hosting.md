@@ -155,18 +155,19 @@ Here is an example page using all of the above:
 open Bolero.Html
 open Bolero.Server.Html
 
-let myPage = doctypeHtml [] [
-    head [] [
-        title [] [text "Hello, world!"]
-    ]
-    body [] [
-        div [] [text "This is the body of the page"]
-        div [attr.id "main"] [
+let myPage = doctypeHtml {
+    head {
+        title { "Hello, world!" }
+    }
+    body {
+        div { "This is the body of the page" }
+        div {
+            attr.id "main" 
             rootComp<Client.Main.MyApp>
-        ]
+        }
         boleroScript
-    ]
-]
+    }
+}
 ```
 
 Such a page can be served as follows in the server-side Startup:
