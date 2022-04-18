@@ -2,10 +2,16 @@
 // Screenshots made with VS Code.
 // * theme: Light+
 // * font: Consolas 20px
-// * F# options: Line Lens disabled, Linter disabled
-#load "../.paket/load/bolero.fsx"
+// * Editor options:
+//   * Code lens: disabled
+// * F# options:
+//   * Line Lens: never
+//   * Linter: disabled
+//   * Inlay Hints: disabled
+#load "../.paket/load/net6.0/refdoc/Bolero.fsx"
 #r "netstandard"
 #r "Facades/netstandard"
+#r "../packages/refdoc/Bolero/lib/net6.0/Bolero.dll"
 
 open Bolero
 open Bolero.Html
@@ -13,17 +19,23 @@ open Elmish
 
 
 module FSharpCode =
+    //---------------
 
     let loginForm =
-        form [attr.id "login-form"] [
-            input [attr.placeholder "First name"]
-            input [attr.placeholder "Last name"]
-            button
-                [on.click (fun _ -> printfn "Welcome!")]
-                [text "Log in"]
-        ]
+        form {
+            attr.id "login-form"
+            input { attr.placeholder "First name" }
+            input { attr.placeholder "Last name" }
+            button {
+                on.click (fun _ -> printfn "Welcome!")
+                "Log in"
+            }
+        }
+
+    //---------------
 
 module Elmish =
+    //---------------
 
     type Model = { name: string; age: int }
 
@@ -34,9 +46,13 @@ module Elmish =
         match message with
         | SetName n -> { model with name = n }
 
+    //---------------
+
 module Templating =
     type Model2 = { name: string }
     type Message2 = LogOut
+
+    //---------------
 
     // F#:
     type Form = Template<"Form.html">
@@ -45,6 +61,9 @@ module Templating =
             .logOut(fun _ -> dispatch LogOut)
             .Elt()
 
+    //---------------
+        model, dispatch
+
 module Remoting =
     type Model = { text: string }
     type Message =
@@ -52,6 +71,8 @@ module Remoting =
         | GotGreeting of string
         | Error of exn
     type MyRemoteFunc = { getGreeting : string -> Async<string> }
+
+    //---------------
 
     // Server
     let service =
@@ -63,12 +84,15 @@ module Remoting =
         match message with
         | Greet who ->
             model,
-            Cmd.ofAsync service.getGreeting who GotGreeting Error
+            Cmd.OfAsync.either service.getGreeting who GotGreeting Error
         | GotGreeting msg ->
             { model with text = msg }, Cmd.none
         | Error _ -> model, Cmd.none
 
+    //---------------
+
 module Routing =
+    //---------------
 
     type Route =
         | [<EndPoint "/">] Home
@@ -80,3 +104,14 @@ module Routing =
         | SetRoute of Route
 
     let router = Router.infer SetRoute (fun m -> m.route)
+
+    //---------------
+
+
+// Reference values from the above modules
+// so that they're not colored as unused
+module DontIgnoreStuff =
+
+    let x = FSharpCode.loginForm
+    let y = Routing.router
+    let z = Remoting.service
