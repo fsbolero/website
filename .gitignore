@@ -12,3 +12,6 @@ build/
 paket-files/
 packages/
 src/Website/docs/reference/
+
+.fake
+.ionide
