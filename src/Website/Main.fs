@@ -27,6 +27,9 @@ module Site =
             let res =
                 docs.sidebar
                 |> Array.map (fun item ->
+                    if item.hideIfNotCurrent && item.url <> doc.url then
+                        Doc.Empty
+                    else
                     let tpl =
                         Layout.MainTemplate.SidebarItem()
                             .Title(item.title)

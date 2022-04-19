@@ -10,6 +10,7 @@ type [<CLIMutable>] SidebarItem =
     {
         title: string
         url: string
+        hideIfNotCurrent: bool
     }
 
 type [<CLIMutable>] Page =
@@ -55,6 +56,7 @@ module private Impl =
                 yield {
                     title = title
                     url = "#" + Markdig.Helpers.LinkHelper.UrilizeAsGfm title
+                    hideIfNotCurrent = false
                 }
             |]
         let content = Markdown.ToHtml(content, pipeline)
