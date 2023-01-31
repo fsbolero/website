@@ -1,52 +1,36 @@
+[CmdletBinding()]
 param(
-    [string]$BoleroSlnFolder = '',
+    [parameter(Mandatory=$true)][string]$BoleroSlnFolder,
     [string]$BoleroSlnConfiguration = 'Debug'
 )
 
-$root = "$PSScriptRoot/.."
+$BoleroSlnFolder = resolve-path $BoleroSlnFolder
+$OutputDir = resolve-path ./build
 
-if (test-path "$root/build/docs/reference.html") {
-    cp "$root/build/docs/reference.html" "$root/build/docs/template.cshtml"
-    rm "$root/build/docs/reference.html"
+if (test-path '$OutputDir/docs/reference') {
+    rm -r $OutputDir/docs/reference/*
 }
-
-$dlls = if ($BoleroSlnFolder -eq '') {
-    @(
-        "$root/packages/refdoc/Bolero/lib/net6.0/Bolero.dll",
-        "$root/packages/refdoc/Bolero/lib/net6.0/Bolero.Html.dll",
-        "$root/packages/refdoc/Bolero.Server/lib/net6.0/Bolero.Server.dll"
-    )
-} else {
-    @(
-        "$BoleroSlnFolder/src/Bolero/bin/$BoleroSlnConfiguration/net6.0/Bolero.dll",
-        "$BoleroSlnFolder/src/Bolero.Html/bin/$BoleroSlnConfiguration/net6.0/Bolero.Html.dll",
-        "$BoleroSlnFolder/src/Bolero.Server/bin/$BoleroSlnConfiguration/net6.0/Bolero.Server.dll"
-    )
+else {
+    mkdir $OutputDir/docs/reference
 }
+mv $OutputDir/docs/reference.html $OutputDir/docs/reference/_template.html
 
-dotnet fsformatting metadataformat `
-  --generate --outdir "$(mkdir -force build/docs/reference)" `
-  --layoutRoots build/docs "$root/packages/fsformatting/FSharp.Formatting/templates/reference" `
-  --sourceRepo https://github.com/fsbolero/bolero `
-  --sourceFolder . `
+dotnet tool restore
+
+dotnet fsdocs build `
+  --sourcefolder $BoleroSlnFolder`
+  --strict `
+  --input $OutputDir/docs/ `
+  --output $OutputDir/docstmp/ `
+  --clean `
+  --projects `
+    "$BoleroSlnFolder/src/Bolero/Bolero.fsproj" `
+    "$BoleroSlnFolder/src/Bolero.Html/Bolero.Html.fsproj" `
+    "$BoleroSlnFolder/src/Bolero.Server/Bolero.Server.fsproj" `
+  --sourcerepo https://github.com/fsbolero/bolero/blob/master/src/ `
   --parameters `
-    project-name "Bolero" `
-    project-author "Intellifactory and contributors" `
-    project-summary "A set of tools and libraries to run F# applications in WebAssembly using Blazor" `
-    project-github "https://github.com/fsbolero/bolero" `
-    project-nuget "https://nuget.org/packages/Bolero" `
-    root "/docs" `
-  --libDirs `
-    "$root/packages/refdoc/Elmish/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Authorization/lib/net6.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Http.Abstractions/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Metadata/lib/net6.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components/lib/net6.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Web/lib/net6.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components.WebAssembly/lib/net6.0" `
-    "$root/packages/refdoc/Microsoft.AspNetCore.Components.Forms/lib/net6.0" `
-    "$root/packages/refdoc/Microsoft.Extensions.DependencyInjection.Abstractions/lib/netstandard2.0" `
-    "$root/packages/refdoc/Microsoft.JSInterop/lib/net6.0" `
-    "$root/packages/refdoc/NETStandard.Library/build/netstandard2.0/ref" `
-  --dllfiles `
-    $dlls
+    root /docs/ `
+    fsdocs-package-project-url https://fsbolero.io
+
+rm -r $OutputDir/docs/
+mv $OutputDir/docstmp/ $OutputDir/docs/

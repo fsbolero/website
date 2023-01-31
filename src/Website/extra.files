@@ -16,4 +16,6 @@ node_modules/bulma/sass/*
 CNAME
 
 // For documentation:
-docs/*
+docs/**/*.html
+docs/**/*.png
+docs/**/*.gif

@@ -15,3 +15,5 @@ src/Website/docs/reference/
 
 .fake
 .ionide
+.idea/
+.fsdocs/

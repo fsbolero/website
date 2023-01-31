@@ -14,10 +14,10 @@
         "dotnet-serve"
       ]
     },
-    "fsharp.formatting.commandtool": {
-      "version": "4.0.0",
+    "fsdocs-tool": {
+      "version": "17.2.2",
       "commands": [
-        "fsformatting"
+        "fsdocs"
       ]
     }
   }

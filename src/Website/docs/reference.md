@@ -4,4 +4,4 @@ hideTitle: true
 hideEditLink: true
 ---
 
-@RenderBody()
+{{fsdocs-content}}
