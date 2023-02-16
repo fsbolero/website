@@ -7,13 +7,17 @@ param(
 $BoleroSlnFolder = resolve-path $BoleroSlnFolder
 $OutputDir = resolve-path ./build
 
-if (test-path '$OutputDir/docs/reference') {
+if (test-path "$OutputDir/docs/reference") {
     rm -r $OutputDir/docs/reference/*
 }
 else {
     mkdir $OutputDir/docs/reference
 }
 mv $OutputDir/docs/reference.html $OutputDir/docs/reference/_template.html
+
+if (-not (test-path "$OutputDir/docstmp/")) {
+    mkdir "$OutputDir/docstmp/"
+}
 
 dotnet tool restore
 
@@ -27,7 +31,9 @@ dotnet fsdocs build `
     "$BoleroSlnFolder/src/Bolero/Bolero.fsproj" `
     "$BoleroSlnFolder/src/Bolero.Html/Bolero.Html.fsproj" `
     "$BoleroSlnFolder/src/Bolero.Server/Bolero.Server.fsproj" `
-  --sourcerepo https://github.com/fsbolero/bolero/blob/master/src/ `
+  --properties `
+    "Configuration=$BoleroSlnConfiguration" `
+  --sourcerepo https://github.com/fsbolero/bolero/blob/master `
   --parameters `
     root /docs/ `
     fsdocs-package-project-url https://fsbolero.io
