@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [parameter(Mandatory=$true)][string]$BoleroSlnFolder,
+    [string]$BoleroSlnFolder = "$PSScriptRoot/../ref/bolero",
     [string]$BoleroSlnConfiguration = 'Debug'
 )
 
