@@ -11,7 +11,7 @@ The main highlights of this release are the switch of remote services to endpoin
 Install the latest project template with:
 
 ```
-dotnet new -i Bolero.Templates::0.2TODO
+dotnet new -i Bolero.Templates::0.22.7
 ```
 
 ## Endpoint routing for remote services
