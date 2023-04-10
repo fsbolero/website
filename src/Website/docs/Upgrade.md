@@ -5,6 +5,8 @@ subtitle: How to update a project for newer releases
 
 ## From v0.21 to v0.22
 
+[See the 0.22 announcement.](https://fsbolero.io/blog/20230410-bolero-0-22-released)
+
 * Bolero v0.22 introduces endpoint routing for remote services.
     While the existing middleware is still supported, it is obsolete, and it is advised to switch to endpoint routing.
 
@@ -59,6 +61,8 @@ subtitle: How to update a project for newer releases
 
 ## From v0.18 to v0.20
 
+[See the 0.20 announcement.](https://fsbolero.io/blog/20220419-bolero-0-20-released)
+
 Bolero v0.20 upgrades the dependency to .NET 6. Here are the associated upgrade steps:
 
 * Install [the .NET SDK 6.0.101 or newer](https://dotnet.microsoft.com/download).
@@ -70,6 +74,8 @@ Bolero v0.20 upgrades the dependency to .NET 6. Here are the associated upgrade 
     See [the documentation on HTML](HTML) for all details on the new syntax.
 
 ## From v0.15 to v0.16
+
+[See the 0.16 announcement.](https://fsbolero.io/blog/20201127-bolero-0-16-released)
 
 Bolero v0.16 upgrades the dependency to .NET 5. Here are the associated upgrade steps:
 
@@ -101,6 +107,8 @@ Bolero v0.16 upgrades the dependency to .NET 5. Here are the associated upgrade 
 
 ## From v0.14 to v0.15
 
+[See the 0.15 announcement.](https://fsbolero.io/blog/20200915-bolero-0-15-released)
+
 Bolero v0.15 doesn't change the SDK requirements. Here are the upgrade steps:
 
 * Elmish has been updated to v3.0. As a consequence, some functions are now obsolete.
@@ -115,6 +123,8 @@ Bolero v0.15 doesn't change the SDK requirements. Here are the upgrade steps:
 
 ## From v0.13 to v0.14
 
+[See the 0.14 announcement.](https://fsbolero.io/blog/20200807-bolero-0-14-released)
+
 Bolero 0.14 doesn't change the SDK requirements. Here are the upgrade steps:
 
 * The module `Bolero.Json` has been removed.
@@ -123,6 +133,8 @@ Bolero 0.14 doesn't change the SDK requirements. Here are the upgrade steps:
     Otherwise, there is nothing to do.
 
 ## From v0.12 to v0.13
+
+[See the 0.13 announcement.](https://fsbolero.io/blog/20200523-bolero-0-13-released)
 
 Bolero 0.13 upgrades the dependency on .NET Core SDK 3.1.300 or newer and on Blazor to 3.2.0. Here are the associated upgrade steps:
 
@@ -188,6 +200,8 @@ Bolero 0.13 upgrades the dependency on .NET Core SDK 3.1.300 or newer and on Bla
         This method takes optional arguments that configure the hosting of the application (server vs client, prerendered or not, etc).
 
 ## From v0.11 to v0.12
+
+[See the 0.12 announcement.](https://fsbolero.io/blog/20200323-bolero-0-12-released)
 
 Bolero 0.12 upgrades the dependency on .NET Core SDK 3.1.102 or newer and on Blazor to 3.2-preview2. Here are the associated upgrade steps:
 
