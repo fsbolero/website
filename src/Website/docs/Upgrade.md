@@ -3,6 +3,60 @@ title: Upgrade guide
 subtitle: How to update a project for newer releases
 ---
 
+## From v0.21 to v0.22
+
+* Bolero v0.22 introduces endpoint routing for remote services.
+    While the existing middleware is still supported, it is obsolete, and it is advised to switch to endpoint routing.
+
+    Here are the migration steps.
+    In the server project's `Startup.fs`:
+
+    * In `ConfigureServices`, replace `AddRemoting`:
+
+        ```fsharp
+        services.AddRemoting<MyApiService>()
+        ```
+
+        with `AddBoleroRemoting`:
+
+        ```fsharp
+        services.AddBoleroRemoting<MyApiService>()
+        ```
+
+    * In `Configure`, remove `app.UseRemoting` and add `endpoints.MapBoleroRemoting`:
+
+        ```fsharp
+        app
+            .UseAuthentication()
+            //.UseRemoting() // Remove this
+            .UseStaticFiles()
+            .UseRouting()
+            .UseBlazorFrameworkFiles()
+            .UseEndpoints(fun endpoints ->
+                endpoints.UseHotReload()
+                endpoints.MapBoleroRemoting() |> ignore // Add this
+                endpoints.MapBlazorHub() |> ignore
+                endpoints.MapFallbackToBolero(Index.page) |> ignore)
+        ```
+
+    * If you use authorization with `IRemoteContext.Authorize` or `AuthorizeWith`, then also add `app.UseAuthorization`.
+        It must be located after `app.UseRouting` and before `app.UseEndpoints`:
+
+        ```fsharp
+        app
+            .UseAuthentication()
+            .UseStaticFiles()
+            .UseRouting()
+            .UseAuthorization() // Add this
+            .UseBlazorFrameworkFiles()
+            .UseEndpoints(fun endpoints ->
+                // ...
+        ```
+
+* Elmish has been updated to version 4.
+    This release significantly revamps subscriptions.
+    See [the Elmish documentation](https://elmish.github.io/elmish/docs/subscription.html#migrating-from-v3) for a guide to convert Elmish subscriptions from v3 to v4.
+
 ## From v0.18 to v0.20
 
 Bolero v0.20 upgrades the dependency to .NET 6. Here are the associated upgrade steps:
@@ -26,23 +80,23 @@ Bolero v0.16 upgrades the dependency to .NET 5. Here are the associated upgrade 
 * In your *client-side* project files:
 
     * Replace the line:
-    
+
         ```xml
         <Project Sdk="Microsoft.NET.Sdk.Web">
         ```
-        
+
         with:
-        
+
         ```xml
         <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
         ```
-        
+
     * Remove the dependency on the NuGet package `Microsoft.AspNetCore.Components.WebAssembly.Build`.
 
 * In *all* your project files:
 
     * Replace the `TargetFramework` with `net5.0`.
-    
+
     * Update the dependency version on all `Microsoft.AspNetCore.*` packages to `5.0.*` (for NuGet) or `~> 5.0.0` (for Paket).
 
 ## From v0.14 to v0.15
@@ -52,7 +106,7 @@ Bolero v0.15 doesn't change the SDK requirements. Here are the upgrade steps:
 * Elmish has been updated to v3.0. As a consequence, some functions are now obsolete.
     For example, `Cmd.ofAsync` should now be replaced with `Cmd.OfAsync.either`.
     It is a simple renaming, you can simply follow the compiler warnings.
-    
+
 * The HTML element reference API has changed:
     * The type `ElementRefBinder` was renamed to `HtmlRef`;
     * its `Ref` property was renamed to `Value`;

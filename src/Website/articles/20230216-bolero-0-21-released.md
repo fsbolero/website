@@ -3,7 +3,7 @@ title: Bolero 0.21 released
 subtitle: Revamped server-side rendering
 ---
 
-We are happy to announce the release of [Bolero](https://fsbolero.io) version 0.20.
+We are happy to announce the release of [Bolero](https://fsbolero.io) version 0.21.
 Bolero is a library that enables writing full-stack applications in F#, whose client side runs in WebAssembly using Blazor.
 
 The main highlight of this release is a revamp of server-side rendering that fixes prerendering and provides new functions to convert Bolero HTML directly to string.
