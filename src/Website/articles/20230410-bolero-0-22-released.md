@@ -163,11 +163,11 @@ See [the Elmish documentation](https://elmish.github.io/elmish/docs/subscription
 
 It is now possible to bind an `HtmlRef` to an element from an HTML template. [#290](https://github.com/fsbolero/Bolero/issues/290)
 
-The attribute `ref="MyRef"` will generate a method `.MyRef()` on the provided type, which takes the `HtmlRef` as argument.
+The attribute `ref="${MyRef}"` will generate a method `.MyRef()` on the provided type, which takes the `HtmlRef` as argument.
 
 ```html
 <button onclick="FocusBtn">Focus the input box</button>
-<input ref="InputRef" type="text" />
+<input ref="${InputRef}" type="text" />
 ```
 
 ```fsharp
