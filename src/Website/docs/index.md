@@ -25,7 +25,7 @@ You can develop Bolero applications on Windows, OSX or Linux. It only has one pr
 The easiest way to get started is to use Bolero's dotnet template. To install it, run the following command:
 
 ```shell
-dotnet new -i Bolero.Templates
+dotnet new install Bolero.Templates
 ```
 
 Then, you can create a new Bolero application:
@@ -38,7 +38,7 @@ This will create a new folder `HelloWorld` and create an application inside it. 
 
 ```shell
 cd HelloWorld
-dotnet run -p src/HelloWorld.Server
+dotnet run --project src/HelloWorld.Server
 ```
 
 This will start the server and run the following minimal application at `localhost:5000`:

@@ -70,11 +70,11 @@
         <Text>
           <p>with <a class="link" href="https://dotnet.microsoft.com/download">.NET SDK 6.0.101</a></p>
           <p class="subtitle">Install the project template:</p>
-          <pre class="is-large"><input readonly onclick="select()" value="dotnet new -i Bolero.Templates"></pre>
+          <pre class="is-large"><input readonly onclick="select()" value="dotnet new install Bolero.Templates"></pre>
           <p class="subtitle">Create a project:</p>
           <pre class="is-large"><input readonly onclick="select()" value="dotnet new bolero-app -o MyApp"></pre>
           <p class="subtitle">Build and run:</p>
-          <pre class="is-large"><input readonly onclick="select()" value="cd MyApp && dotnet run -p src/MyApp.Server"></pre>
+          <pre class="is-large"><input readonly onclick="select()" value="cd MyApp && dotnet run --project src/MyApp.Server"></pre>
           <p>&nbsp;</p>
         </Text>
         <DocUrl>/docs</DocUrl>
