@@ -38,7 +38,7 @@ This will create a new folder `HelloWorld` and create an application inside it. 
 
 ```shell
 cd HelloWorld
-dotnet run -p src/HelloWorld.Server
+dotnet run --project src/HelloWorld.Server
 ```
 
 This will start the server and run the following minimal application at `localhost:5000`:
