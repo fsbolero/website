@@ -31,7 +31,7 @@ Here are the steps to set up an inferred router:
         | BlogArticle of id: int                // -> /BlogArticle/42
         | BlogList of user: string * page: int  // -> /BlogList/tarmil/1
     ```
-    
+
     See [Format](#format) for all the supported types and how to customize the corresponding path.
 
 2. Add a field in the Elmish model that stores the endpoint:
@@ -48,19 +48,19 @@ Here are the steps to set up an inferred router:
 
     ```fsharp
     type Message =
-        | SetPage of Page
+        | PageChanged of Page
         // other messages...
 
     let update message model =
         match message with
-        | SetPage page -> { model with page = page }
+        | PageChanged page -> { model with page = page }
         // other messages...
     ```
 
 4. Create the router with `Router.infer`:
 
     ```fsharp
-    let router = Router.infer SetPage (fun m -> m.page)
+    let router = Router.infer PageChanged (fun m -> m.page)
     ```
 
 5. Attach the router to the Elmish program:
@@ -69,6 +69,37 @@ Here are the steps to set up an inferred router:
     Program.mkSimple initModel update view
     |> Program.withRouter router
     ```
+
+> Note: the message `PageChanged` is dispatched automatically when the URL has been modified (eg by clicking a link).
+> It is not recommended to dispatch it directly yourself, as it will result in the same message being dispatched twice: first by you, and then by the router.
+>
+> Instead, if you want to trigger a page change programmatically, you can add another message for this purpose:
+>
+> ```fsharp
+> type Message =
+>     | PageChanged of Page
+>     | ChangePage of Page
+>
+> let update message model =
+>     match message with
+>     | PageChanged page -> { model with page = page }
+>     | ChangePage page -> { model with page = page }
+> ```
+>
+> Alternatively, to trigger a page change programmatically from the update function, simply return a model with the desired target page:
+>
+> ```fsharp
+> type Message =
+>     | PageChnaged of Page
+>     | LoginSucceeded of UserData
+>
+> let update message model =
+>     match message with
+>     | PageChanged page -> { model with page = page }
+>     | LoginSucceeded userData ->
+>         { model with userData = userData; page = Home }
+> ```
+
 
 The router has a few helpful utilities:
 
@@ -179,7 +210,7 @@ The router has a few helpful utilities:
           List of tags: list<string>        // -> /list/bolero/blazor
         | [<EndPoint "/login/{page}">]
           LoginAndRedirectTo of page: Page  // -> /login/list/bolero/blazor
-          
+
     and ArticleId =
         {
             uid: int
@@ -203,7 +234,7 @@ let customRouter : Router<Page, Model, Message> =
             | [|"article"; id|] -> Some (BlogArticle (int id))
             | [|"list"; user; page|] -> Some (BlogList (user, int page))
             | _ -> None
-            |> Option.map SetPage
+            |> Option.map PageChanged
         // getRoute : Page -> string
         getRoute = function
             | Home -> "/"
@@ -226,7 +257,7 @@ let customRouter2 : Router<Model, Message> =
             | [|"article"; id|] -> Some (BlogArticle (int id))
             | [|"list"; user; page|] -> Some (BlogList (user, int page))
             | _ -> None
-            |> Option.map SetPage
+            |> Option.map PageChanged
         // getRoute : Model -> string
         getRoute = fun model ->
             match model.page with
@@ -279,7 +310,7 @@ There are essentially two ways to handle page models:
 
     ```fsharp
     type Message =
-        | SetPage of Page
+        | PageChanged of Page
         | SetUsername of string
         | SetPassword of string
 
@@ -290,7 +321,7 @@ There are essentially two ways to handle page models:
 
     let update (message: Message) (model: Model) =
         match message with
-        | SetPage p -> { model with page = p }
+        | PageChanged p -> { model with page = p }
         | SetUsername username -> model |> updateLogin (fun l -> { l with username = username })
         | SetPassword password -> model |> updateLogin (fun l -> { l with password = password })
     ```
@@ -303,7 +334,7 @@ There are essentially two ways to handle page models:
         | People -> ()
         | Login model -> Router.definePageModel model { username = ""; password = "" }
 
-    let router = Router.inferWithModel SetPage (fun m -> m.page) defaultModel
+    let router = Router.inferWithModel PageChanged (fun m -> m.page) defaultModel
     ```
 
     And finally, when calling the functions `router.Link` or `router.HRef` to create a link to a page, you need to have a dummy page model value to pass to `Login`. You can use `Router.noModel` for this purpose:
