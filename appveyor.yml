@@ -18,7 +18,7 @@ install:
 
 build_script:
 - ps: dotnet build -c Release
-- ps: pushd ref/bolero; git checkout master; git pull; .\build.cmd -t build; popd
+- ps: pushd ref/bolero; git checkout master; git pull; .\build.ps1 -t build; popd
 - ps: ./tools/gen-refdoc.ps1
 
 environment:
