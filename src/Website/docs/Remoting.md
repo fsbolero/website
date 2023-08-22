@@ -39,7 +39,7 @@ On the client side, you will typically want to call these functions in the `upda
     type Startup() =
 
         member __.ConfigureServices(services: IServiceCollection) =
-            services.AddRemoting()
+            services.AddBoleroRemoting()
             |> ignore
     ```
 
@@ -90,7 +90,10 @@ On the client side, you will typically want to call these functions in the `upda
 
 ## Defining on the server side
 
-On the server side, Bolero.Remoting is registered as a service and added as ASP.NET Core middleware. There are several ways to do so.
+On the server side, Bolero.Remoting is registered as a service and added as ASP.NET Core routing endpoint. There are several ways to do so.
+
+> Note: Until version 0.21, Bolero.Remoting was registered as an ASP.NET Core middleware.
+> That usage still works, but it is considered obsolete, and it is advised to switch to endpoint routing as explained [in the upgrade guide](https://fsbolero.io/docs/Upgrade#from-v0.21-to-v0.22).
 
 ### A simple service
 
@@ -125,22 +128,24 @@ Here is how to implement a remote service without any dependencies.
     type Startup() =
 
         member this.ConfigureServices(services: IServiceCollection) =
-            services.AddRemoting(myService)
+            services.AddBoleroRemoting(myService)
             |> ignore
     ```
 
-3. In your ASP.NET Core startup, start the remoting middleware:
+3. In your ASP.NET Core startup, register the remoting endpoint:
 
     ```fsharp
     type Startup() =
 
         member this.Configure(app: IApplicationBuilder) =
-            app.UseRemoting()
+            app.UseRouting()
                 // .OtherMethods()...
+                .UseEndpoints(fun endpoints ->
+                    endpoints.MapBoleroRemoting() |> ignore
+                    // other endpoints...
+                )
             |> ignore
     ```
-
-    Note that `UseRemoting` (and any other middleware) should be called *before* `UseRouting` to make sure that it catches the requests to its endpoints.
 
 ### Using dependency injection
 
@@ -177,11 +182,11 @@ You might need to use injected dependencies in a remote service: a logger, a dat
     type Startup() =
 
         member this.ConfigureServices(services: IServiceCollection) =
-            services.AddRemoting<MyServiceHandler>()
+            services.AddBoleroRemoting<MyServiceHandler>()
             |> ignore
     ```
 
-3. In your ASP.NET Core startup, start the remoting middleware, just like for a simple service.
+3. In your ASP.NET Core startup, register the remoting endpoint, just like for a simple service.
 
 ### IRemoteContext
 
@@ -202,7 +207,7 @@ Here is how to obtain an `IRemoteContext`:
 
 ### Using several services
 
-You can of course define several remote services in the same application. Each of them needs to be registered by a separate call to `AddRemoting` in `ConfigureServices`. A single call to `UseRemoting` is enough in `Configure`.
+You can of course define several remote services in the same application. Each of them needs to be registered by a separate call to `AddBoleroRemoting` in `ConfigureServices`. A single call to `MapBoleroRemoting` is enough in `Configure`.
 
 ## Authentication and authorization
 
@@ -230,12 +235,12 @@ Authentication is done using standard ASP.NET Core authentication features. Enab
     |> ignore
     ```
 
-* In `Configure`, use the following:
+* In `Configure`, call `UseAuthentication` before other methods:
 
     ```fsharp
     app.UseAuthentication()
-        .UseRemoting()
-        // .OtherMethods()...
+        .UseRouting()
+        .UseEndpoints(...)
     |> ignore
     ```
 
@@ -281,7 +286,7 @@ let loginService (ctx: IRemoteContext) =
 
 ### Authorization
 
-Authorization also uses standard ASP.NET Core features. It is enabled in the startup class's `ConfigureServices` method:
+Authorization also uses standard ASP.NET Core features. It is enabled by calling `AddAuthorization` in the startup class's `ConfigureServices` method:
 
 ```fsharp
 member this.ConfigureServices(services: IServiceCollection) =
@@ -289,6 +294,16 @@ member this.ConfigureServices(services: IServiceCollection) =
         .AddAuthorization()
         //.OtherMethods()...
     |> ignore
+```
+
+and `UseAuthorization` in `Configure`, after `UseRouting` and before `UseEndpoints`:
+
+```fsharp
+app.UseAuthentication()
+    .UseRouting()
+    .UseAuthorization()
+    .UseEndpoints(...)
+|> ignore
 ```
 
 You can then mark a remote function as authorized, ie. callable only by authenticated users, by wrapping it in a call to the method `Authorize` on [IRemoteContext](#iremotecontext).
