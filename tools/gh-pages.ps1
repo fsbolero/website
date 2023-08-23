@@ -10,14 +10,14 @@ $gitURL = "https://github.com/fsbolero/fsbolero.github.io"
 write-host -foregroundColor "green" "=====> $msg"
 
 function clearDir() {
-  rm -r build/.git -errorAction ignore
+  remove-item -r build/.git -errorAction ignore
 }
 
 clearDir
 pushd build
 git clone -n --depth 1 $gitURL .clone
-mv .clone/.git .
-rmdir .clone
+move-item .clone/.git .
+remove-item -r .clone -errorAction ignore
 
 if ($env -eq "appveyor") {
   git config credential.helper "store --file=.git/credentials"
@@ -27,6 +27,11 @@ if ($env -eq "appveyor") {
   [System.IO.File]::WriteAllText("$pwd/.git/credentials", $cred)
   git config user.name "AppVeyor"
   git config user.email "websharper-support@intellifactory.com"
+}
+elseif ($env -eq "github") {
+  git remote set-url --push origin "https://fsbolero:${GITHUB_TOKEN}@github.com/fsbolero/fsbolero.github.io"
+  git config user.name "Bolero"
+  git config user.email "bolero@fsbolero.io"
 }
 
 git add . 2>git.log
