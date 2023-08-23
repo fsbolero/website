@@ -19,16 +19,7 @@ git clone -n --depth 1 $gitURL .clone
 move-item .clone/.git .
 remove-item -r .clone -errorAction ignore
 
-if ($env -eq "appveyor") {
-  git config credential.helper "store --file=.git/credentials"
-  $t = $env:GH_TOKEN
-  $cred = "https://" + $t + ":@github.com"
-  $d = pwd
-  [System.IO.File]::WriteAllText("$pwd/.git/credentials", $cred)
-  git config user.name "AppVeyor"
-  git config user.email "websharper-support@intellifactory.com"
-}
-elseif ($env -eq "github") {
+if ($env -eq "github") {
   git remote set-url --push origin "https://fsbolero:${GITHUB_TOKEN}@github.com/fsbolero/fsbolero.github.io"
   git config user.name "Bolero"
   git config user.email "bolero@fsbolero.io"

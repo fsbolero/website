@@ -1,7 +1,5 @@
 # Bolero website
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ww05qe1heu29fnyq/branch/master?svg=true)](https://ci.appveyor.com/project/IntelliFactory/website)
-
 This is the source for the website [fsbolero.io](https://fsbolero.io).
 
 It also contains the Bolero documentation, under [src/Website/docs](src/Website/docs).
