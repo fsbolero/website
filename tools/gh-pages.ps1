@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 # pushes src/wwwroot to gh-pages branch
 
 param ([string] $env = "local")

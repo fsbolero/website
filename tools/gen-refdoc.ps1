@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 [CmdletBinding()]
 param(
     [string]$BoleroSlnFolder = "$PSScriptRoot/../ref/bolero",
