@@ -52,6 +52,3 @@ jobs:
           destination-repository-name: fsbolero.github.io
           user-email: bolero@fsbolero.io
           target-branch: master
-
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
