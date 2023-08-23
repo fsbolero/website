@@ -24,7 +24,7 @@ if (-not (test-path "$OutputDir/docstmp/")) {
 dotnet tool restore
 
 dotnet fsdocs build `
-  --sourcefolder $BoleroSlnFolder`
+  --sourcefolder $BoleroSlnFolder `
   --strict `
   --input $OutputDir/docs/ `
   --output $OutputDir/docstmp/ `
