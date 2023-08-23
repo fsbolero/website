@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - '**'
+    pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodule: recursive
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.0.100'
+
+      - name: Install dependencies
+        run: ./tools/install.ps1
+
+      - name: Build site
+        run: |
+          pushd src/Website
+          npm run sass
+          popd
+          dotnet build -c Release
+
+      - name: Build Bolero
+        run: |
+          git submodule update --init --recursive
+          pushd ref/bolero
+          git checkout master
+          git pull
+          ./build.ps1 -t build -c Debug
+          popd
+
+      - name: Generate reference documentation
+        run: ./tools/gen-refdoc.ps1
+
+      - name: Publish
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: build
+          destination-github-username: fsbolero
+          destination-repository-name: fsbolero.github.io
+          user-email: bolero@fsbolero.io
+          target-branch: master

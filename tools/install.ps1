@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 # Install nuget packages
 pushd src/Website
 try { npm install }

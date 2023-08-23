@@ -7,7 +7,7 @@ bin/
 obj/
 build/
 *.user
-/src/Website/css/all*.css
+/src/Website/css/all*.css*
 /src/Website/js/
 paket-files/
 packages/

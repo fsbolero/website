@@ -12,7 +12,7 @@ module Highlight =
     [<Require(typeof<Resources.Styles.Vs>)>]
     let Run() =
         JS.Document.QuerySelectorAll("code[class^=language-]").ForEach(
-            (fun (node, _, _, _) -> Hljs.HighlightBlock(node)),
+            (fun (node, _, _, _) -> Hljs.HighlightElement(node)),
             JS.Undefined
         )
 
