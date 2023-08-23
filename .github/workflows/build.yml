@@ -24,7 +24,11 @@ jobs:
         run: ./tools/install.ps1
 
       - name: Build site
-        run: dotnet build -c Release
+        run: |
+          pushd src/Website
+          npm run sass
+          popd
+          dotnet build -c Release
 
       - name: Build Bolero
         run: |

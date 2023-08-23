@@ -2,7 +2,6 @@ STORAGE: NONE
 RESTRICTION: == netstandard2.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    BuildWebCompiler (1.12.405)
     FSharp.Core (6.0.3)
     FSharp.Text.RegexProvider (2.1)
       FSharp.Core (>= 4.3.4)
