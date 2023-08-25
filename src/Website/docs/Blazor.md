@@ -366,3 +366,55 @@ type MyApplication() =
             }
         }
 ```
+
+## CSS isolation
+
+Blazor provides a mechanism called [CSS isolation](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/css-isolation) that ties a CSS style sheet with a given component type.
+
+### Using components with CSS isolation
+
+To use the isolated styles from component libraries you reference, make sure that your HTML content includes a reference to `"ASSEMBLYNAME.styles.css"`, where `ASSEMBLYNAME` is the name of your project.
+
+This reference is automatically included in all variants of the `bolero-app` project templates.
+
+### Adding CSS isolation to your component
+
+Here are the steps to create an isolated style sheet for your own component:
+
+1. Create a file with extension `.bolero.css`. For example, `MyStyleSheet.bolero.css`:
+
+    ```css
+    a.active {
+        background: lightblue;
+    }
+    ```
+
+2. Compile the project once. This will generate a source file containing a module `CssScopes`.
+
+3. Add the generated scope to your component:
+
+    ```css
+    type MyComponent() =
+        inherit Component()
+
+        override _.CssScope = CssScopes.MyStyleSheet
+
+        override _.Render() =
+            a {
+                attr.href "https://fsbolero.io"
+                attr.``class`` "active"
+                "Go to Bolero!"
+            }
+        ```
+
+And that's it, the link in `MyComponent` will appear with a light blue background!
+
+The property `CssScope` is available on all Bolero component base types, including `Component`, `ElmishComponent<'model, 'msg>` and `ProgramComponent<'model, 'msg>`.
+
+The name of the stylesheet in the module `CssScopes` is based on the file name; it can be customized in `Client.fsproj`:
+
+```xml
+<ItemGroup>
+  <BoleroScopedCss Update="MyStylesheet.bolero.css" ScopeName="MyScope" />
+</ItemGroup>
+```
