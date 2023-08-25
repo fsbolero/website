@@ -265,6 +265,34 @@ The same hole can be bound to two inputs using two different handlers. For examp
 </p>
 ```
 
+### Element reference holes
+
+Holes defined as the value of a `ref` attribute define a reference to the HTML element.
+This is useful for referencing the element in JavaScript interop; see [the corresponding documentation](Blazor#html-element-references).
+
+```html
+<button onclick="FocusBtn">Focus the input box</button>
+<input ref="${InputRef}" type="text" />
+```
+
+```fsharp
+type HelloTemplate = Template<"hello.html">
+
+type Hello() =
+    inherit Component()
+
+    let inputRef = HtmlRef()
+
+    override this.Render() =
+        HelloTemplate()
+            .InputRef(inputRef)
+            .FocusBtn(fun _ ->
+                match inputRef.Value with
+                | Some inputRef -> inputRef.FocusAsync() |> ignore
+                | None -> failwith "Input is not bound")
+            .Elt()
+```
+
 ## Nested templates
 
 It is sometimes convenient to define a set of templates together in the same file. For example, a set of related widgets. Or the template for a list together with the template for an item in this list.
