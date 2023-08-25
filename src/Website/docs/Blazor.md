@@ -362,7 +362,10 @@ type MyApplication() =
         div {
             comp<MyComponent> { myComponentRef }
             button {
-                on.click (fun _ -> myComponentRef.Value.Refresh())
+                on.click (fun _ ->
+                    match myComponentRef.Value with
+                    | Some myComponent -> myComponent.Refresh()
+                    | None -> ())
 
                 "Refresh my component!"
             }
