@@ -115,6 +115,15 @@ The router has a few helpful utilities:
     a { router.HRef Home; "Go to Home" }
     ```
 
+* Both these methods take an optional `hash` parameter to add a hash component to the URL, in order to make the browser scroll to the element with the given id after displaying the corresponding page.
+
+    ```fsharp
+    a {
+        router.HRef(Home, "heading-1")
+        "Go to Home and scroll to #heading-1"
+    }
+    ```
+
 ### Format
 
 `Router.infer` supports the following types:
