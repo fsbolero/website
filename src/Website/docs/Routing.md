@@ -168,8 +168,41 @@ The router has a few helpful utilities:
         | [<EndPoint "/user/{user}/comments">]
           Comments of user: string
     ```
-    
-    The path must contain a `{parameter}` for each of its case's values. Alternatively, the path can consist of a single non-parameter fragment; in this case, the values are appended in order as separate fragments.
+
+    Query parameters can also be specified:
+
+    ```fsharp
+    type Page =
+        | [<EndPoint "/article?id={articleId}">]
+          BlogArticle of articleId: int
+    ```
+
+    They can of course be mixed together with path parameters:
+
+    ```fsharp
+    type Page =
+        | [<EndPoint "/list/{user}?page={pageNumber}&count={pageSize}"]
+          BlogList of user: string * pageNumber: int * pageSize: int
+    ```
+
+    The syntax `?{param}` is short for `?param={param}`:
+
+    ```fsharp
+    type Page =
+        | [<EndPoint "/list/{user}?{page}&{count}"]
+          BlogList of user: string * page: int * count: int
+    ```
+
+    Query parameters can have type string, bool, integer or float. In these cases, they are mandatory. Alternatively, they can be option or voption of these types, making them optional.
+
+    ```fsharp
+    type Page =
+        | [<EndPoint "/list/{user}?{page}&{count}"]
+          BlogList of user: string * page: int option * count: int option
+    ```
+
+    Together, the path and query must contain a `{parameter}` for each of its case's values.
+    Alternatively, the endpoint can consist of a single non-parameter path fragment; in this case, the values are appended in order as separate fragments.
     
     ```fsharp
     type Page =
