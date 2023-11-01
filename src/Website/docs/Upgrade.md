@@ -3,6 +3,25 @@ title: Upgrade guide
 subtitle: How to update a project for newer releases
 ---
 
+## From v0.22 to v0.23
+
+[See the 0.23 announcement.](https://fsbolero.io/blog/TODO-bolero-0-23-released)
+
+* The signatures of the following server-side methods and their various overloads have changed:
+
+    * `IServiceCollection.AddBoleroHost`
+    * `IServiceCollection.AddBoleroRouting`
+    * `IEndpointRouteBuilder.MapFallbackToBolero`
+
+    The following changes are applied to them:
+
+    * Optional arguments are changed from F#-style to C#-style.
+    * Function arguments are changed from F#-style functions to C#-style `Func` or `Action`.
+
+    These changes are source-compatible for most use cases.
+
+* Functions `on.stopPropagation` and `on.preventDefault` now take the event name without the `"on"` prefix.
+
 ## From v0.21 to v0.22
 
 [See the 0.22 announcement.](https://fsbolero.io/blog/20230410-bolero-0-22-released)
