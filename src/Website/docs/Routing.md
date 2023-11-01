@@ -70,6 +70,15 @@ Here are the steps to set up an inferred router:
     |> Program.withRouter router
     ```
 
+You can specify the endpoint to show when the user visits a URL that can't be parsed with `Router.withNotFound`.
+Note that this endpoint is used when initially loading a page with an unrecognized URL; however it is not used when the user clicks a link in the Bolero page to an unrecognized URL, as that would prevent using external links.
+
+```fsharp
+let router =
+    Router.infer PageChanged (fun m -> m.page)
+    |> Router.withNotFound Home
+```
+
 > Note: the message `PageChanged` is dispatched automatically when the URL has been modified (eg by clicking a link).
 > It is not recommended to dispatch it directly yourself, as it will result in the same message being dispatched twice: first by you, and then by the router.
 >
@@ -308,6 +317,8 @@ let customRouter2 : Router<Model, Message> =
             | BlogList(user, page) -> sprintf "/list/%s/%i" user page
     }
 ```
+
+To provide the default route for such a router that doesn't have an endpoint type, instead of `Router.withNotFound`, you can use `Router.withNotFoundMsg` and pass the Elmish message to send when the user visits an unrecognized URL.
 
 ## Page Models
 
