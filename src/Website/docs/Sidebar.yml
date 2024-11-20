@@ -2,6 +2,8 @@
 - url: /docs
   title: Getting Started
 - url: /docs/Hosting
+- url: /docs/Hosting-pre-blazor-8
+  hideIfNotCurrent: true
 - url: /docs/HTML
 - url: /docs/HTML-list-functions
   hideIfNotCurrent: true
