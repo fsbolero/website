@@ -3,26 +3,26 @@ title: Hosting models
 subtitle: WebAssembly or server-side
 ---
 
-Bolero applications can run in two different modes: WebAssembly (also referred to as client-side Bolero) and server-side.
+> Note: Blazor 8 and Bolero 0.24 introduced new hosting models documented here.
+> [This page](Hosting-pre-blazor-8) describes the pre-Blazor 8 hosting models, which are still supported but considered legacy.
 
-In WebAssembly mode, dynamic content runs on the client side using [WebAssembly](https://webassembly.org/).
-It is still a full .NET implementation, but running directly in the user's browser.
+Bolero applications, like all Blazor applications, can run in a number of different modes.
 
-In server-side mode, dynamic content runs on the server side and is shared with the user's browser via a [SignalR](https://dotnet.microsoft.com/apps/aspnet/signalr) connection.
+* In plain WebAssembly, all F# code runs in the browser using [WebAssembly](https://webassembly.org/) and the static content is a simple HTML file.
 
-You can learn more about these hosting models in [the official Blazor documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-5.0).
+* In hosted modes, there is an ASP.NET Core server side that serves the static content, and dynamic behavior can run either in WebAssembly, or on the server side using a [SignalR](https://dotnet.microsoft.com/apps/aspnet/signalr) connection to update the browser.
 
-## Hosting models
-
-### Plain WebAssembly mode
+## Plain WebAssembly mode
 
 To create a plain WebAssembly application, use the [dotnet project template](index#creating-a-project) with the following arguments:
 
 ```sh
-dotnet new bolero-app --server=false
+dotnet new bolero-app --render=WebAssembly
 ```
 
-In plain WebAssembly mode, the static content of the application is a simple `.html` file, and the dynamic Bolero content is rendered in a tag of this file.
+In plain WebAssembly mode, the static content of the application is a simple `.html` file, located at `src/<Project>.Client/wwwroot/index.html`.
+The dynamic Bolero content is rendered in a tag of this file.
+
 This file must contain the following:
 
 ```html
@@ -38,237 +38,153 @@ builder.RootComponents.Add<Main.MyApp>("#main")
 
 Note that prerendering is not possible in plain WebAssembly mode.
 
-### Hosted WebAssembly mode
+## Hosted modes
 
-Hosted WebAssembly is the default hosting mode created by the [dotnet project template](index#creating-a-project):
+### InteractiveWebAssembly
 
-```sh
-dotnet new bolero-app
-```
-
-In hosted WebAssembly mode, the static content of the application is rendered on the ASP.NET Core server side.
-[See below](#static-content-generation) for the different ways it can be generated.
-
-Like in plain WebAssembly mode, the static content must include a container element matching the selector used in `Startup.fs`.
-
-Unlike in plain WebAssembly mode, prerendering is possible based on the [configuration](#configuring-hosted-modes).
-
-### Server-side mode
-
-To create a server-side Bolero app, create a default [dotnet project template](index#creating-a-project):
+To create a hosted WebAssembly application, use the [dotnet project template](index#creating-a-project) with the following arguments:
 
 ```sh
-dotnet new bolero-app
+dotnet new bolero-app --render=InteractiveWebAssembly
 ```
 
-and in `src/AppName.Server/Startup.fs`, replace the line:
+In InteractiveWebAssembly mode, the static content of the application is served by an ASP.NET Core server.
+It is defined in Bolero HTML syntax in the file `<Project>.Server/Index.fs`.
 
-```fsharp
-.AddBoleroHost()
+### InteractiveServer
+
+To create a server-side application, use the [dotnet project template](index#creating-a-project) with the following arguments:
+
+```sh
+dotnet new bolero-app --render=InteractiveServer
 ```
 
-with:
+In InteractiveServer mode, both the static and dynamic content of the application run in an ASP.NET Core server.
 
-<!-- TODO: .AddServerSideBlazor()? if we remove it from template -->
-```fsharp
-.AddBoleroHost(server = true)
+The static content is defined in Bolero HTML syntax in the file `<Project>.Server/Index.fs`.
+
+The dynamic content runs on the server side using a [SignalR](https://dotnet.microsoft.com/apps/aspnet/signalr) connection to update the browser.
+
+### InteractiveAuto
+
+To create an auto-hosted application, use the [dotnet project template](index#creating-a-project) with the following arguments:
+
+```sh
+dotnet new bolero-app --render=InteractiveAuto
 ```
 
-The static content is rendered exactly like hosted WebAssembly mode, [see below](#static-content-generation).
+In InteractiveAuto mode, the application determines automatically whether it should run in InteractiveServer or InteractiveWebAssembly mode.
+Essentially, the first time a user connects to the site, it runs in InteractiveServer mode, but also downloads the WebAssembly assets in the background.
+Then, on subsequent connections, it runs in InteractiveWebAssembly mode using the assets that are already loaded.
 
-## Configuring hosted modes
+## Stream rendering
 
-Hosted WebAssembly and server-side are known collectively as hosted modes, and they share a lot of configuration and features.
+Stream rendering is a Blazor feature that allows serving an initial version of a page while launching an asynchronous task that will dynamically update the page with updated content.
 
-### Configuration
+It can be used when the page's proper content is slow to load, to display temporary content: in general, either a loader or a cached but potentially outdated version of the content.
 
-Hosted modes are configured by using `AddBoleroHost` in the (server-side) dependency injection.
+Stream rendering is supported in all hosted modes.
 
-```fsharp
-type Startup() =
+### Stream rendering static content
 
-    member this.ConfigureServices(services: IServiceCollection) =
-        services.AddBoleroHost() |> ignore
-        // ... other dependencies ...
-```
+To stream render static content, add a [component](blazor#components) in the server project inheriting from `StreamRenderingComponent<'T>`, where `'T` is the type of the component's data model.
+This type has three members to override:
 
-This method takes several optional arguments:
+* `InitialModel: 'T` is the data model to display initially.
+* `LoadModel : 'T -> Task<'T>` loads the data model to stream dynamically. It takes `InitialModel` as argument.
+* `Render : 'T -> Node` indicates how to render the data model.
 
-* `server: bool` determines whether this is a hosted WebAssembly (`server = false`) or server-side application (`server = true`).
-
-    The default is `false`.
-
-    Note: when setting to `true`, make sure that `services.AddServerSideBlazor() |> ignore` is also called.
-
-* `prerendered: bool` determines whether the dynamic Bolero content is prerendered.
-
-    If true, then the content is rendered on the server side (even in WebAssembly mode) and the resulting HTML is included in the static content served by ASP.NET Core.
-    This prevents the "pop-in" effect where the user first sees an empty container, and once the page is ready (ie WebAssembly has started or SignalR has connected), the content suddenly appears.
-
-    The default is `true`.
-
-* `devToggle: bool` determines whether the user can choose between hosted WebAssembly and server-side mode by passing `?server=false` or `?server=true`, respectively, in the URL.
-
-    This feature is intended for development only.
-    For example, when writing a hosted WebAssembly application, it can be convenient to temporarily switch to server-side mode for debugging.
-
-    This setting is only active when the ASP.NET Core application runs in the `Development` environment; in any other environment, it has no effect.
-
-    The default is `true`.
-
-### Static content generation
-
-There are multiple ways available to generate the static HTML content that contains a hosted Bolero app.
-
-#### Bolero HTML
-
-> Introduced in v0.17.
-
-The recommended way to generate static content for Bolero is to use the same [HTML functions](HTML) that are used by dynamic content.
-It is the default method used by the dotnet project template, or can be explicitly used with `--hostpage=bolero`.
-
-A few additional functions are available in the module `Bolero.Server.Html`:
-
-* `doctypeHtml` creates a `<html>` tag preceded by a standard doctype declaration.
-    Like other element functions, it takes as arguments a list of attributes and a list of child elements.
-
-* `comp<T>` inserts a component of type `T` as dynamic content.
-
-    This may include prerendered content, depending on the `prerendered` value passed to `AddBoleroHost`.
-
-    In WebAssembly mode, this must be inserted inside a container element matched by the selector used in `Startup.fs`.
-
-    In WebAssembly mode without prerendering, this actually doesn't insert any content.
-    Indeed, in this mode, all that is needed is the container element and the `boleroScript` (see below).
-    So if you know that you will always run your app in WebAssembly mode without prerendering, then you can simply not insert the `comp`.
-    This way, you won't need a reference from the server project to the client project.
-
-    Note that other functions in the `comp` family, such a `ecomp` and `lazyComp`, will not work correctly here.
-
-* `boleroScript` inserts a `<script>` tag pointing to the JavaScript file that starts the application.
-    It knows which script to insert (either `blazor.webassembly.js` or `blazor.server.js`) based on the `server` and `devToggle` values passed to `AddBoleroHost`.
-
-Here is an example page using all of the above:
+For example, loading the data from a database repository:
 
 ```fsharp
-open Bolero.Html
-open Bolero.Server.Html
+type Item = { name: string; price: decimal }
 
-let myPage = doctypeHtml {
-    head {
-        title { "Hello, world!" }
+type PriceTable() =
+    inherit StreamRenderingComponent<Item array>()
+    
+    [<Inject>]
+    member val IPriceRepository PriceRepository = null with get, set
+
+    override _.InitialModel = [| { name = "Loading prices..."; price = 0m } |]
+    
+    override this.LoadModel(_initialModel) = task {
+        let! data = this.PriceRepository.GetPricesAsync()
+        return data
     }
-    body {
-        div { "This is the body of the page" }
-        div {
-            attr.id "main"
-            comp<Client.Main.MyApp>
+    
+    override _.Render(model) =
+        table {
+            thead {
+                tr { th { "Name" }; th { "Price" } }
+            }
+            tbody {
+                for item in model do
+                    tr { td { item.name }; td { $"{item.price}" } }
+            }
         }
+```
+
+And then to include the content in the page:
+
+```fsharp
+let index = doctypeHtml {
+    head { (* ... *) }
+    body {
+        h1 { "Price table" }
+        comp<PriceTable>
         boleroScript
     }
 }
 ```
 
-Such a page can be served as follows in the server-side Startup:
+### Stream rendering an Elmish program
+
+For content that will continue to be dynamic after the stream rendering, you can use a stream rendered [Elmish program](elmish).
+
+* Add the attribute `[<StreamRendering true>]` to your `ElmishComponent<'model, 'msg>`.
+
+* Instead of creating the Elmish program with `Program.mkSimple` or `Program.mkProgram`, use `Program.mkSimpleStreamRendering` or `Program.mkStreamRendering`, respectively.
+
+    * `mkSimpleStreamRendering`, in addition to an `initialModel: 'model`, also takes a function `load: 'model -> Task<'model>` which loads the model to stream dynamically.
+    
+    * `mkStreamRendering`, instead of a function `init` which returns an initial model and commands, takes:
+    
+        * an `initialModel: 'model` which is rendered initially;
+        
+        * a function `loadModel: 'model -> Task<'model> * Cmd<'msg>` which loads the model to stream dynamically as well as initial commands, if any.
+
+The following example loads the model by calling a remote function:
 
 ```fsharp
-type Startup() =
+type Remote = { getCounter: unit -> Async<int> }
 
-    member this.Configure(app: IApplicationBuilder) =
-        app.UseStaticFiles()
-            .UseRouting()
-            .UseBlazorFrameworkFiles() // Necessary in hosted WebAssembly mode
-            .UseEndpoints(fun endpoints ->
-                endpoints.MapBlazorHub() |> ignore // Necessary in server-side mode
-                endpoints.MapFallbackToBolero(myPage) |> ignore
-            )
-        |> ignore
-```
+type Model = { counter: int }
 
-Alternatively, it can be used as the content of an ASP.NET Core MVC controller:
+type Msg = Increment | Decrement
 
-```fsharp
-open Microsoft.AspNetCore.Mvc
-open Bolero.Server
+let initialModel = { counter = 0 }
 
-type MyController() =
-    inherit Controller()
-
-    member this.Index() =
-        this.BoleroPage(myPage)
-```
-
-#### Razor
-
-Another option is to use a Razor page.
-This is particularly convenient when integrating the application in an ASP.NET Core application written in C#.
-It can also be used with an F# application with [Razor runtime compilation](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-5.0&tabs=visual-studio#enable-runtime-compilation-in-an-existing-project); this was the mode used by the dotnet template until Bolero 0.16.
-Starting with 0.17, it can be used with `--hostpage=razor`.
-
-Bolero provides the type `IBoleroHostConfig` and a few extension methods on Razor's `Html` to help render components and Blazor JavaScript tags using the configuration from `AddBoleroHost`:
-
-* `RenderComponentAsync<T>(IBoleroHostConfig)` inserts a component of type `T`.
-
-    This may include prerendered content, depending on the `prerendered` value passed to `AddBoleroHost`.
-
-    In WebAssembly mode, this must be inserted inside a container element matched by the selector used in `Startup.fs`.
-
-* `RenderBoleroScript(IBoleroHostConfig)` inserts a `<script>` tag pointing to the JavaScript file that starts the application.
-    It knows which script to insert based on the `server` and `devToggle` values passed to `AddBoleroHost`.
-
-Here is an example page using all of the above:
-
-```razor
-@page "/"
-@namespace MyApp.Server
-@using Bolero.Server
-@inject IBoleroHostConfig BoleroHostConfig
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hello, world!</title>
-  </head>
-  <body>
-    <div>This is the body of the page</div>
-    <div id="main">
-      @(await Html.RenderComponentAsync<MyApp.Client.Main.MyApp>(BoleroHostConfig))
-    </div>
-    @Html.RenderBoleroScript(BoleroHostConfig)
-  </body>
-</html>
-```
-
-Such a page saved as `Pages/_Host.cshtml` can be served as follows in the server-side Startup:
-
-```fsharp
-type Startup() =
-
-    member this.Configure(app: IApplicationBuilder) =
-        app.UseStaticFiles()
-            .UseRouting()
-            .UseBlazorFrameworkFiles() // Necessary in hosted WebAssembly mode
-            .UseEndpoints(fun endpoints ->
-                endpoints.MapBlazorHub() |> ignore // Necessary in server-side mode
-                endpoints.MapFallbackToPage("/_Host") |> ignore
-            )
-        |> ignore
-```
-
-Or in a C# application:
-
-```csharp
-public class Startup
-{
-    public void Configure(IApplicationBuilder app)
-    {
-        app.UseStaticFiles()
-            .UseRouting()
-            .UseBlazorFrameworkFiles() // Necessary in hosted WebAssembly mode
-            .UseEndpoints(endpoints =>
-            {
-                endpoints.MapBlazorHub(); // Necessary in server-side mode
-                endpoints.MapFallbackToPage("/_Host");
-            });
-    }
+let loadModel (remote: Remote) _ = task {
+    let! counter = remote.getCounter()
+    return { counter = counter }
 }
+
+let update msg model =
+    match msg with
+    | Decrement -> { counter = model.counter - 1 }
+    | Increment -> { counter = model.counter + 1 }
+
+let view model dispatch =
+    concat {
+        button { "-"; on.click (fun _ -> dispatch Decrement) }
+        $" {model.counter} "
+        button { "+"; on.click (fun _ -> dispatch Increment) }
+    }
+
+[<StreamRendering true>]
+type Counter() =
+    inherit ElmishComponent<Model, Msg>()
+    
+    override _.Program 
+        Program.mkSimpleStreamRendering initialModel loadModel update view
 ```
