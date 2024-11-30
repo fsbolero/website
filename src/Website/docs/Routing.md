@@ -99,7 +99,7 @@ let router =
 >
 > ```fsharp
 > type Message =
->     | PageChnaged of Page
+>     | PageChanged of Page
 >     | LoginSucceeded of UserData
 >
 > let update message model =
