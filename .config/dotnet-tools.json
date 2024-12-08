@@ -3,22 +3,25 @@
   "isRoot": true,
   "tools": {
     "paket": {
-      "version": "7.1.4",
+      "version": "9.0.2",
       "commands": [
         "paket"
-      ]
+      ],
+      "rollForward": false
     },
     "dotnet-serve": {
-      "version": "1.10.172",
+      "version": "1.10.175",
       "commands": [
         "dotnet-serve"
-      ]
+      ],
+      "rollForward": false
     },
     "fsdocs-tool": {
-      "version": "17.2.2",
+      "version": "20.0.1",
       "commands": [
         "fsdocs"
-      ]
+      ],
+      "rollForward": false
     }
   }
 }

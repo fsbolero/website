@@ -18,7 +18,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.0.100'
+          dotnet-version: '8.0.404'
 
       - name: Install dependencies
         run: ./tools/install.ps1
@@ -55,4 +55,4 @@ jobs:
           target-branch: master
 
 env:
-  BOLERO_BRANCH: releases/v0.22
+  BOLERO_BRANCH: releases/v0.24
