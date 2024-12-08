@@ -39,8 +39,26 @@ body {
 
 pre, code {
   font-family: $family-monospace;
+  background-color: transparent;
 }
 
 code {
   background-color: transparent;
+}
+
+/* OVERRIDES FOR fsdocs-default.css */
+
+body {
+  display: block;
+  background-color: transparent;
+}
+
+header {
+  border-bottom: 0;
+  padding: 0;
+  height: auto;
+}
+
+.fsdocs-tip {
+  position: fixed !important;
 }

@@ -10,15 +10,17 @@ $BoleroSlnFolder = resolve-path $BoleroSlnFolder
 $OutputDir = resolve-path ./build
 
 if (test-path "$OutputDir/docs/reference") {
-    rm -r $OutputDir/docs/reference/*
+    rm -r $OutputDir/docs/reference/
 }
-else {
-    mkdir $OutputDir/docs/reference
-}
-mv $OutputDir/docs/reference.html $OutputDir/docs/reference/_template.html
+mkdir $OutputDir/docs/reference
 
 if (-not (test-path "$OutputDir/docstmp/")) {
     mkdir "$OutputDir/docstmp/"
+}
+
+if (test-path "$OutputDir/docs/reference.html")
+{
+    mv $OutputDir/docs/reference.html $OutputDir/docs/reference/_template.html
 }
 
 dotnet tool restore
