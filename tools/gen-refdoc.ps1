@@ -42,5 +42,6 @@ dotnet fsdocs build `
     root /docs/ `
     fsdocs-package-project-url https://fsbolero.io
 
+rm $OutputDir/docstmp/Dockerfile
 rm -r $OutputDir/docs/
 mv $OutputDir/docstmp/ $OutputDir/docs/
