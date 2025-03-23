@@ -25,7 +25,7 @@ type MyService =
         member this.BasePath = "/myService"
 ```
 
-Remote calls are `POST` requests to the function's URL. Arguments and return values are automatically serialized to JSON.
+Remote calls are `POST` requests to the function's URL. Arguments and return values are automatically serialized to JSON via `System.Text.Json`. Since it has trouble with F# types like `list`, consider configuring it with [FSharp.SystemTextJson](https://github.com/Tarmil/FSharp.SystemTextJson/blob/master/docs/Using.md#using-with-bolero).
 
 ## Calling on the client side
 
