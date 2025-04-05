@@ -73,7 +73,7 @@ Additionally, some parameter types must be handled specially:
     
     let myButton model dispatch =
         comp<MatButton> {
-          attr.callback "OnClick" (fun _ -> dispatch ButtonClicked)
+          on.click (fun _ -> dispatch ButtonClicked)
           "Click me!"
         }
     ```
