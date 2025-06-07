@@ -171,8 +171,6 @@ The type of the binding value depends on the element on which the `bind` attribu
 * `<input type="checkbox">` has a boolean value, and can be filled by a `bool`.
 * `<input>` with other types or no type, `<textarea>` and `<select>` have an arbitrary value, and can be filled by a `string`.
 
-> Note: Radio buttons (`<input type="radio">`) are not yet supported by Blazor, and therefore by Bolero; see [the issue on Blazor's tracker](https://github.com/aspnet/Blazor/issues/1322).
-
 ```html
 <input type="checkbox" bind="${IsChecked}">
 ```
@@ -211,6 +209,35 @@ type Hello = Template<"hello.html">
 let hello model dispatch =
     Hello()
         .Name(model.name, fun n -> dispatch (SetName n))
+        .Elt()
+```
+
+Radio buttons can also use `bind`:
+
+```html
+<!-- use the same name for the 3 radio buttons to group them. -->
+<input type="radio" name="select-color" bind="${Red}">
+<input type="radio" name="select-color" bind="${Green}">
+<input type="radio" name="select-color" bind="${Blue}">
+```
+
+```fsharp
+type Color = Red | Green | Blue
+type Model = { color: Color }
+
+type Message =
+    | SetColor of Color
+
+type RadioButtons = Template<"radioButtons.html">
+
+let radioButtons model dispatch =
+    // HTML requires each button to have a different string value,
+    // but you don't have to use this string in the event handler
+    // if you have a better typed value at hand.
+    RadioButtons()
+        .Red("Red", fun _ -> dispatch (SetColor Red))
+        .Green("Green", fun _ -> dispatch (SetColor Green))
+        .Blue("Blue", fun _ -> dispatch (SetColor Blue))
         .Elt()
 ```
 
