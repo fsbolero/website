@@ -140,7 +140,7 @@ or a blazor component as well
 type FooComponent() =
     inherit Component()
 
-    [<CascadingParameter>]
+    [<CascadingParameter(Name = "MeaningOfLife")>]
     member val MeaningOfLife = 0 with get, set
 
     override this.Render() =
