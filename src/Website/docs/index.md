@@ -20,12 +20,12 @@ It adds a lot of features designed specifically to work in F#:
 
 ## Creating a project
 
-You can develop Bolero applications on Windows, OSX or Linux. It only has one prerequisite: the [.NET SDK](https://dotnet.microsoft.com/download/dotnet-core), version 6.0.101 or newer.
+You can develop Bolero applications on Windows, OSX or Linux. It only has one prerequisite: the [.NET SDK](https://dotnet.microsoft.com/download/dotnet-core), version 8.0.100 or newer.
 
 The easiest way to get started is to use Bolero's dotnet template. To install it, run the following command:
 
 ```shell
-dotnet new -i Bolero.Templates
+dotnet new install Bolero.Templates
 ```
 
 Then, you can create a new Bolero application:
