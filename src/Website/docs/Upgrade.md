@@ -3,6 +3,49 @@ title: Upgrade guide
 subtitle: How to update a project for newer releases
 ---
 
+## From v0.24 to v0.25
+
+* Bolero v0.25 upgrades the minimum dependency to .NET 8, and recommended to .NET 10.  
+    To upgrade a project to .NET 10, in addition to setting the `TargetFramework` of all projects to `net10.0`, the following changes are needed on the `Server` project:
+
+    * In the project file, inside a `<PropertyGroup>` tag, add the following:
+        ```xml
+        <RequiresAspNetWebAssets>true</RequiresAspNetWebAssets>
+        ```
+    * In `Startup.fs`:
+        * Make sure that the call to `app.UseBlazorFrameworkFiles()`, if any, is located before other `app.UseXXX()` calls.
+        * Before other `app.MapXXX()` calls, add the following:
+            ```fsharp
+            app.MapStaticAssets() |> ignore
+            ```
+        * In order to be able to run locally with `dotnet run` or from your IDE, add the following immediately after the call to `builder.Build()`:
+            ```fsharp
+            #if DEBUG
+            StaticWebAssetsLoader.UseStaticWebAssets(app.Environment, app.Configuration)
+            #endif
+            ```
+           This requires `open`ing the namespace `Microsoft.AspNetCore.Hosting.StaticWebAssets`.
+
+* Bolero introduces overloads for HTML template event handlers and data bindings, where the callbacks return `Task` or `Async<unit>` rather than `unit`.
+    In some cases, this can break the compilation and require adding type annotations to disambiguate which overload is being used.
+    For example:
+
+    ```fsharp
+    type MyButton = Template<"""<button onclick="${Click}">Click me!</button>""">
+
+    // Error FS0041 : A unique overload for method 'Click' could not be determined
+    let view model dispatch =
+        MyButton()
+            .Click(fun _ -> dispatch MyMessage)
+            .Elt()
+
+    // Fix: add a type annotation to 'dispatch'
+    let view model (dispatch: Message -> unit) =
+        MyButton()
+            .Click(fun _ -> dispatch MyMessage)
+            .Elt()
+    ```
+
 ## From v0.22 to v0.23
 
 [See the 0.23 announcement.](https://fsbolero.io/blog/TODO-bolero-0-23-released)
