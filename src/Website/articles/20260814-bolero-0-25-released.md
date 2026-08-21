@@ -1,6 +1,6 @@
 ---
 title: Bolero 0.25 released
-subtitle: Interactive render modes
+subtitle: With .NET 10 support
 ---
 
 We are happy to announce the release of [Bolero](https://fsbolero.io) version 0.25.
